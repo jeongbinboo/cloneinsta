@@ -125,10 +125,7 @@ const HomeTabs = () => {
               ? 'ios-person-circle-sharp'
               : 'ios-person-circle-outline';
             return (
-              <Ionicons
-                name={iconName}
-                size={30}
-                style={{color: 'white'}}></Ionicons>
+              <Ionicons name={iconName} size={30} style={{color: 'white'}} />
             );
           },
         }}

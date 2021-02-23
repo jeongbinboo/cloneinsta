@@ -44,7 +44,7 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <NavigationContainer>
+      <>
         <Stack.Navigator>
           <Stack.Screen //Home.js
             name="Home"
@@ -108,8 +108,9 @@ class Profile extends React.Component {
               headerTitleAlign: 'center',
             }}
           />
-        </Stack.Navigator>
 
+          {/*<ClickedPic />*/}
+        </Stack.Navigator>
         {this.state.MakeContentModal ? (
           <MakeContent
             toggleMakeContentModal={() => this.toggleMakeContentModal()}
@@ -122,8 +123,7 @@ class Profile extends React.Component {
         ) : (
           <></>
         )}
-        {/*<ClickedPic />*/}
-      </NavigationContainer>
+      </>
     );
   }
 }

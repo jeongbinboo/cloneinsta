@@ -44,7 +44,6 @@ const HeaderIcon = (props) => {
       color="white"
       backgroundColor="transparent"
       style={{paddingRight: '3%'}}
-      //onPress={() => props.navigation.navigate('HomeScreen')}
     />
   );
 };
@@ -52,64 +51,127 @@ const HeaderIcon = (props) => {
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const HomeTabs = () => {
+  return (
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: 'white',
+        inactiveBackgroundColor: 'black',
+        inactiveTintColor: 'white',
+        activeBackgroundColor: 'black',
+        showLabel: false,
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({focused}) => {
+            let iconName = ''; //아이콘 눌렸을 때 변경
+            iconName = focused ? 'ios-home' : 'ios-home-outline';
+            return (
+              <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Find"
+        component={FindScreen}
+        options={{
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = focused ? 'ios-search-sharp' : 'ios-search-outline';
+            return (
+              <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Upload"
+        component={UploadScreen}
+        options={{
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = focused
+              ? 'ios-add-circle-sharp'
+              : 'ios-add-circle-outline';
+            return (
+              <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Shopping"
+        component={ShoppingScreen}
+        options={{
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = focused ? 'ios-basket' : 'ios-basket-outline';
+            return (
+              <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = focused
+              ? 'ios-person-circle-sharp'
+              : 'ios-person-circle-outline';
+            return (
+              <Ionicons
+                name={iconName}
+                size={30}
+                style={{color: 'white'}}></Ionicons>
+            );
+          },
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
 const App = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        tabBarOptions={{
-          activeTintColor: 'white',
-          inactiveBackgroundColor: 'black',
-          inactiveTintColor: 'white',
-          activeBackgroundColor: 'black',
-        }}>
-        <Tab.Screen
-          name="Home"
-          //component={HomeScreen}
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Instagram"
+          component={HomeTabs}
           options={{
-            tabBarIcon: ({focused}) => {
-              let iconName = ''; //아이콘 눌렸을 때 변경
-              iconName = focused ? 'ios-home' : 'ios-home-outline';
-              return (
-                <Ionicons
-                  name={iconName}
-                  size={30}
-                  style={{color: 'white'}}></Ionicons>
-              );
+            headerStyle: {
+              backgroundColor: 'black',
             },
-          }}>
-          {() => (
-            <Stack.Navigator>
-              <Stack.Screen
-                name="Instagram"
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'black',
-                  },
-                  headerTintColor: 'white',
-                  headerTitleStyle: {
-                    fontFamily: 'Norican-Regular',
-                    fontSize: 30,
-                  },
-                  headerRight: () => (
-                    <View style={{flexDirection: 'row'}}>
-                      <HeaderIcon name="ios-heart-outline" />
-                      <HeaderIcon name="ios-paper-plane-outline" />
-                    </View>
-                  ),
-                }}>
-                {({navigation}) => <HomeScreen navigation={navigation} />}
-              </Stack.Screen>
-              <Stack.Screen
-                name="CommentScreen"
-                component={CommentScreen}
-                options={{
-                  headerTitle: '댓글',
-                  headerTitleAlign: 'center',
-                  headerStyle: {
-                    backgroundColor: 'black',
-                  },
-                  headerTintColor: 'white',
-                  /*headerLeft: ({navigation}) => (
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontFamily: 'Norican-Regular',
+              fontSize: 30,
+            },
+            headerRight: () => (
+              <View style={{flexDirection: 'row'}}>
+                <HeaderIcon name="ios-heart-outline" />
+                <HeaderIcon name="ios-paper-plane-outline" />
+              </View>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="CommentScreen"
+          component={CommentScreen}
+          options={{
+            headerTitle: '댓글',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: 'white',
+            /*headerLeft: ({navigation}) => (
                     <HeaderIcon
                       name="ios-chevron-back"
                       navigation={navigation}
@@ -121,80 +183,9 @@ const App = () => {
                       navigation={navigation}
                     />
                   ),*/
-                }}
-              />
-            </Stack.Navigator>
-          )}
-        </Tab.Screen>
-        <Tab.Screen
-          name="Find"
-          component={FindScreen}
-          options={{
-            tabBarIcon: ({focused}) => {
-              let iconName = '';
-              iconName = focused ? 'ios-search-sharp' : 'ios-search-outline';
-              return (
-                <Ionicons
-                  name={iconName}
-                  size={30}
-                  style={{color: 'white'}}></Ionicons>
-              );
-            },
           }}
         />
-        <Tab.Screen
-          name="Upload"
-          component={UploadScreen}
-          options={{
-            tabBarIcon: ({focused}) => {
-              let iconName = '';
-              iconName = focused
-                ? 'ios-add-circle-sharp'
-                : 'ios-add-circle-outline';
-              return (
-                <Ionicons
-                  name={iconName}
-                  size={30}
-                  style={{color: 'white'}}></Ionicons>
-              );
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Shopping"
-          component={ShoppingScreen}
-          options={{
-            tabBarIcon: ({focused}) => {
-              let iconName = '';
-              iconName = focused ? 'ios-basket' : 'ios-basket-outline';
-              return (
-                <Ionicons
-                  name={iconName}
-                  size={30}
-                  style={{color: 'white'}}></Ionicons>
-              );
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{
-            tabBarIcon: ({focused}) => {
-              let iconName = '';
-              iconName = focused
-                ? 'ios-person-circle-sharp'
-                : 'ios-person-circle-outline';
-              return (
-                <Ionicons
-                  name={iconName}
-                  size={30}
-                  style={{color: 'white'}}></Ionicons>
-              );
-            },
-          }}
-        />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

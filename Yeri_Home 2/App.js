@@ -118,7 +118,7 @@ const HomeTabs = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={Profile}
         options={{
           tabBarIcon: ({focused}) => {
             let iconName = '';
@@ -138,52 +138,132 @@ const HomeTabs = () => {
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Instagram"
-          component={HomeTabs}
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: 'white',
+          inactiveBackgroundColor: 'black',
+          inactiveTintColor: 'white',
+          activeBackgroundColor: 'black',
+          showLabel: false,
+        }}>
+        <Tab.Screen
+          name="Home"
+          //component={HomeScreen}
           options={{
-            headerStyle: {
-              backgroundColor: 'black',
+            tabBarIcon: ({focused}) => {
+              let iconName = ''; //아이콘 눌렸을 때 변경
+              iconName = focused ? 'ios-home' : 'ios-home-outline';
+              return (
+                <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+              );
             },
-            headerTintColor: 'white',
-            headerTitleStyle: {
-              fontFamily: 'Norican-Regular',
-              fontSize: 30,
-            },
-            headerRight: () => (
-              <View style={{flexDirection: 'row'}}>
-                <HeaderIcon name="ios-heart-outline" />
-                <HeaderIcon name="ios-paper-plane-outline" />
-              </View>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="CommentScreen"
-          component={CommentScreen}
-          options={{
-            headerTitle: '댓글',
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: 'black',
-            },
-            headerTintColor: 'white',
-            /*headerLeft: ({navigation}) => (
-                    <HeaderIcon
-                      name="ios-chevron-back"
-                      navigation={navigation}
-                    />
+          }}>
+          {() => (
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Instagram"
+                component={HomeScreen}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'black',
+                  },
+                  headerTintColor: 'white',
+                  headerTitleStyle: {
+                    fontFamily: 'Norican-Regular',
+                    fontSize: 30,
+                  },
+                  headerRight: () => (
+                    <View style={{flexDirection: 'row'}}>
+                      <HeaderIcon name="ios-heart-outline" />
+                      <HeaderIcon name="ios-paper-plane-outline" />
+                    </View>
                   ),
-                  headerRight: ({navigation}) => (
-                    <HeaderIcon
-                      name="ios-paper-plane-outline"
-                      navigation={navigation}
-                    />
-                  ),*/
+                }}
+              />
+              <Stack.Screen
+                name="CommentScreen"
+                component={CommentScreen}
+                options={{
+                  headerTitle: '댓글',
+                  headerTitleAlign: 'center',
+                  headerStyle: {
+                    backgroundColor: 'black',
+                  },
+                  headerTintColor: 'white',
+                  /*headerLeft: ({navigation}) => (
+                      <HeaderIcon
+                        name="ios-chevron-back"
+                        navigation={navigation}
+                      />
+                    ),
+                    headerRight: ({navigation}) => (
+                      <HeaderIcon
+                        name="ios-paper-plane-outline"
+                        navigation={navigation}
+                      />
+                    ),*/
+                }}
+              />
+            </Stack.Navigator>
+          )}
+        </Tab.Screen>
+        <Tab.Screen
+          name="Find"
+          component={FindScreen}
+          options={{
+            tabBarIcon: ({focused}) => {
+              let iconName = '';
+              iconName = focused ? 'ios-search-sharp' : 'ios-search-outline';
+              return (
+                <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+              );
+            },
           }}
         />
-      </Stack.Navigator>
+        <Tab.Screen
+          name="Upload"
+          component={UploadScreen}
+          options={{
+            tabBarIcon: ({focused}) => {
+              let iconName = '';
+              iconName = focused
+                ? 'ios-add-circle-sharp'
+                : 'ios-add-circle-outline';
+              return (
+                <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+              );
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Shopping"
+          component={ShoppingScreen}
+          options={{
+            tabBarIcon: ({focused}) => {
+              let iconName = '';
+              iconName = focused ? 'ios-basket' : 'ios-basket-outline';
+              return (
+                <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+              );
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ({focused}) => {
+              let iconName = '';
+              iconName = focused
+                ? 'ios-person-circle-sharp'
+                : 'ios-person-circle-outline';
+              return (
+                <Ionicons name={iconName} size={30} style={{color: 'white'}} />
+              );
+            },
+          }}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };

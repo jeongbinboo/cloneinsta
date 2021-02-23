@@ -9,9 +9,21 @@ const Stack = createStackNavigator();
 const StackNavigation = () => {
   return (
     <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Join" component={Join} />
-      <Stack.Screen name="Ifpasswordforgot" component={Ifpasswordforgot} />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Join"
+        component={Join}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Ifpasswordforgot"
+        component={Ifpasswordforgot}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

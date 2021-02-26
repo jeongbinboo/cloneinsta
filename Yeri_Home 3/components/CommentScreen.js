@@ -13,6 +13,11 @@ import {
   KeyboardAwareScrollView,
 } from 'react-native-keyboard-aware-scroll-view';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {KeyboardAvoidingView} from 'react-native';
 
 const COMMENT_DATA = [
   //댓글 목록
@@ -76,6 +81,16 @@ const COMMENT_DATA = [
     name: 'yeri__k',
     content: '우와~',
   },
+  {
+    id: '13',
+    name: 'James_Jung',
+    content: '와 정말 귀여워요~',
+  },
+  {
+    id: '14',
+    name: 'yeri__k',
+    content: '우와z~',
+  },
 ];
 
 const renderItem = ({item}) => (
@@ -83,11 +98,10 @@ const renderItem = ({item}) => (
 );
 
 const CommentScreen = () => {
-  const [value, onChangeText] = React.useState('');
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.Cmtcontainer}>
-        <KeyboardAwareFlatList
+        <FlatList
           data={COMMENT_DATA}
           renderItem={({item}) => {
             return renderItem({item});
@@ -95,28 +109,37 @@ const CommentScreen = () => {
           keyExtractor={(item) => item.id}
         />
       </View>
-      <KeyboardAwareScrollView style={styles.inputView} scrollEnabled={false}>
-        <View style={styles.IconView}>
-          <Emoji />
-          <Emoji />
-          <Emoji />
-          <Emoji />
-          <Emoji />
-          <Emoji />
-          <Emoji />
-          <Emoji />
-        </View>
-        <View style={styles.inputTextView}>
-          <Ionicons name="ios-person-circle-outline" size={60} />
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(text) => onChangeText(text)}
-            value={value}
-            placeholder={'댓글 달기...'}
-            placeholderTextColor="grey"
-          />
-        </View>
+      <KeyboardAwareScrollView style={styles.inputView}>
+        <Input />
       </KeyboardAwareScrollView>
+    </View>
+  );
+};
+
+const Input = () => {
+  const [value, onChangeText] = React.useState('');
+  return (
+    <>
+      <View style={styles.IconView}>
+        <Emoji />
+        <Emoji />
+        <Emoji />
+        <Emoji />
+        <Emoji />
+        <Emoji />
+        <Emoji />
+        <Emoji />
+      </View>
+      <View style={styles.inputTextView}>
+        <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
+        <TextInput
+          style={styles.textInput}
+          onChangeText={(text) => onChangeText(text)}
+          value={value}
+          placeholder={'댓글 달기...'}
+          placeholderTextColor="grey"
+        />
+      </View>
     </>
   );
 };
@@ -125,8 +148,8 @@ const Emoji = () => {
   return (
     <Ionicons
       name="ios-happy"
-      size={33}
-      style={{marginLeft: '2%', marginRight: '2%'}}
+      size={hp('4.3%')}
+      style={{marginLeft: wp('2%'), marginRight: wp('2%')}}
     />
   );
 };
@@ -134,24 +157,39 @@ const Emoji = () => {
 const CmtList = (props) => {
   return (
     <View style={styles.cmtView}>
-      <View style={{marginRight: '1%'}}>
-        <Ionicons name="ios-person-circle-outline" size={50} />
+      <View style={{marginRight: wp('1%')}}>
+        <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
       </View>
       <View style={styles.cmt}>
-        <View>
+        <View style={{flexDirection: 'row'}}>
           <TouchableOpacity>
-            <Text style={{fontWeight: 'bold', marginRight: '2%', fontSize: 16}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                marginRight: wp('2%'),
+                fontSize: hp('2.3%'),
+              }}>
               {props.name}
             </Text>
           </TouchableOpacity>
-          <Text style={{fontSize: 16}}>{props.content}</Text>
+          <Text style={{fontSize: hp('2.3%')}}>{props.content}</Text>
         </View>
         <View style={styles.cmtExtraView}>
-          <Text style={{color: 'grey', marginRight: '8%', fontSize: 13}}>
+          <Text
+            style={{
+              color: 'grey',
+              marginRight: wp('8%'),
+              fontSize: hp('1.8%'),
+            }}>
             1시간
           </Text>
           <TouchableOpacity>
-            <Text style={{fontWeight: 'bold', color: 'grey', fontSize: 13}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: 'grey',
+                fontSize: hp('1.8%'),
+              }}>
               답글 달기
             </Text>
           </TouchableOpacity>
@@ -168,8 +206,9 @@ const CmtLikes = () => {
     <View style={styles.LikesIcon}>
       <Ionicons
         name={isLikes ? 'ios-heart-outline' : 'ios-heart'}
-        size={20}
+        size={hp('3%')}
         color="grey"
+        style={{marginRight: wp('1%')}}
         onPress={() => setIsLikes(!isLikes)}
       />
     </View>
@@ -177,45 +216,43 @@ const CmtLikes = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   Cmtcontainer: {
-    height: '83%',
-    //backgroundColor: 'orange',
+    flex: 0.83,
   },
   cmtView: {
     flex: 1,
     //height: '20%',
-    marginTop: '1%',
-    marginBottom: '1%',
+    marginTop: hp('1%'),
+    marginBottom: hp('1%'),
     alignItems: 'center',
     flexDirection: 'row',
-    paddingLeft: '1%',
-    paddingRight: '1%',
+    paddingLeft: wp('1%'),
+    paddingRight: wp('1%'),
   },
   cmt: {
-    width: '75%',
-    height: '100%',
+    width: wp('74%'),
+    height: hp('6.5%'),
     flexDirection: 'column',
   },
-  cmtContent: {
-    height: '60%',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingLeft: '1%',
-  },
   cmtExtraView: {
-    height: '40%',
+    height: hp('2.5%'),
     //justifyContent: 'center',
     paddingLeft: '1%',
     flexDirection: 'row',
   },
   LikesIcon: {
-    width: '11%',
-    marginLeft: '1%',
+    width: wp('11%'),
+    marginLeft: wp('1%'),
     justifyContent: 'center',
     alignItems: 'center',
   },
   inputView: {
-    width: '100%',
+    flex: 1,
+    width: wp('100%'),
+    //height: hp('15%'),
     position: 'absolute',
     bottom: 0,
     borderTopWidth: 1,
@@ -225,9 +262,9 @@ const styles = StyleSheet.create({
   IconView: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: '1%',
+    marginTop: hp('1%'),
     //height: '100%',
-    width: '100%',
+    width: wp('100%'),
     //position: 'absolute',
     //bottom: 50,
   },
@@ -238,12 +275,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
-    height: 40,
-    width: '80%',
+    height: hp('6.5%'),
+    width: wp('80%'),
     borderRadius: 10,
     borderWidth: 1,
     borderColor: 'grey',
-    marginLeft: '1%',
+    marginLeft: wp('1%'),
   },
 });
 

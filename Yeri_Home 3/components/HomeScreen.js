@@ -11,6 +11,10 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ModalScreen from './modalScreen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const CONTENT_DATA = [
   //업로드 글 항목
@@ -115,7 +119,7 @@ const ContentIcon = (props) => {
         size={30}
         color="black"
         backgroundColor="transparent"
-        style={{paddingRight: '3%', marginLeft: '1%'}}
+        style={{paddingRight: wp('3%'), marginLeft: wp('1%')}}
       />
     </TouchableOpacity>
   );
@@ -129,12 +133,13 @@ const LikesId = () => {
         size={25}
         color="black"
         style={{
-          marginRight: '1%',
+          marginRight: wp('1%'),
         }}
       />
       <Text
         style={{
           color: 'black',
+          fontSize: hp('1.9%'),
         }}>
         M0ovie 님 외 여러명이 좋아합니다.
       </Text>
@@ -150,8 +155,8 @@ const Comment = (props) => {
           style={{
             color: 'black',
             fontWeight: 'bold',
-            fontSize: 17,
-            paddingRight: '2%',
+            fontSize: hp('2.4%'),
+            marginRight: '3%',
           }}>
           {props.name}
         </Text>
@@ -182,7 +187,7 @@ class Content extends HomeScreen {
                 style={{
                   color: 'black',
                   fontWeight: 'bold',
-                  fontSize: 20,
+                  fontSize: hp('2.7%'),
                 }}>
                 {this.props.name}
               </Text>
@@ -227,7 +232,7 @@ const Story = (props) => (
     <TouchableOpacity>
       <Ionicons name="ios-person-circle-outline" size={65} color="black" />
     </TouchableOpacity>
-    <Text style={{fontSize: 13, color: 'black'}}>{props.name}</Text>
+    <Text style={{fontSize: hp('1.6%'), color: 'black'}}>{props.name}</Text>
   </View>
 );
 
@@ -237,73 +242,73 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   storyView: {
-    height: '15%',
+    height: hp('10%'),
     alignItems: 'center',
     flexDirection: 'row',
     borderColor: 'lightgray',
     borderBottomWidth: 1,
   },
   storyId: {
-    width: '20%',
-    marginLeft: '1%',
-    marginRight: '3%',
-    marginBottom: '1%',
+    width: wp('22%'),
+    marginLeft: wp('1%'),
+    marginRight: wp('3%'),
+    marginBottom: hp('1%'),
     justifyContent: 'center',
     alignItems: 'center',
   },
   contentView: {
-    height: 400,
-    marginVertical: 10,
+    height: hp('55%'),
+    marginVertical: hp('1%'),
   },
   contentId: {
-    height: '13%',
+    height: hp('7%'),
     //marginTop: '1%',
     flexDirection: 'row',
   },
   contentIcon: {
-    width: '15%',
-    marginLeft: '1%',
-    marginRight: '1%',
+    width: wp('15%'),
+    marginLeft: wp('1%'),
+    marginRight: wp('1%'),
     justifyContent: 'center',
     alignItems: 'center',
   },
   mainIcon: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingLeft: '1%',
+    paddingLeft: wp('1%'),
   },
   content: {
-    width: '66%',
+    width: wp('68%'),
     flexDirection: 'column',
     justifyContent: 'center',
     //alignItems:'center'
-    paddingLeft: '2%',
+    paddingLeft: wp('2%'),
   },
   imgView: {
-    height: '50%',
-    width: '100%',
+    height: hp('30%'),
+    width: wp('100%'),
     //backgroundColor: 'blue',
   },
   iconView: {
-    height: '6%',
+    height: hp('3%'),
     flexDirection: 'row',
-    marginTop: '3%',
+    marginTop: hp('2%'),
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   likesId: {
     marginTop: '2%',
-    height: '7%',
-    paddingLeft: '2%',
+    height: hp('4%'),
+    paddingLeft: wp('2%'),
     flexDirection: 'row',
     alignItems: 'center',
   },
   cmtView: {
-    height: '22%',
+    height: hp('9%'),
   },
   cmt: {
-    height: '30%',
-    paddingLeft: '2%',
+    height: hp('3.5%'),
+    paddingLeft: wp('2%'),
     alignItems: 'center',
     flexDirection: 'row',
   },

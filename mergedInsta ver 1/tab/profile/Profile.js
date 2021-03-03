@@ -1,25 +1,30 @@
-import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Button} from 'react-native';
+import React from "react";
+import { StyleSheet, View, Text, TouchableOpacity, Button } from "react-native";
 
 //navigation
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createStackNavigator,
+  HeaderBackButton,
+} from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 //icon
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import AntDesign from "react-native-vector-icons/AntDesign";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 
-//component
-import ProfileHome from '../../components/ProfileHome';
-import ProfileEdit from '../../components/ProfileEdit';
-import MakeContent from '../../components/MakeContent';
-import Settings from '../../components/Settings';
-import PostList from '../../components/PostList';
-import Follow from '../../components/Follower';
-import NewPost from '../../components/NewPost';
+//screens
+import ProfileHome from "./screens/ProfileHome";
+import ProfileEdit from "./screens/ProfileEdit";
+import PostList from "./screens/PostList";
+import Follow from "./screens/Follower";
+import NewPost from "./screens/NewPost";
+
+//modals
+import MakeContent from "./modals/MakeContent";
+import Settings from "./modals/Settings";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -50,16 +55,17 @@ class Profile extends React.Component {
           <Stack.Screen //Home.js
             name="Home"
             options={{
-              title: 'M0ovie',
+              title: "M0ovie",
               headerRight: () => (
                 <View style={styles.headerBtn}>
                   <TouchableOpacity
-                    onPress={() => this.toggleMakeContentModal()}>
-                    <AntDesign name={'plus'} size={30} color={'#3F3F3F'} />
+                    onPress={() => this.toggleMakeContentModal()}
+                  >
+                    <AntDesign name={"plus"} size={30} color={"#3F3F3F"} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => this.toggleSettingModal()}>
                     <EvilIcons
-                      style={{marginLeft: '10%'}}
+                      style={{ marginLeft: "10%" }}
                       name="navicon"
                       size={30}
                       color="#3F3F3F"
@@ -68,9 +74,10 @@ class Profile extends React.Component {
                 </View>
               ),
               //headerTitleAlign: 'center',  //타이틀 중앙정렬
-              justifyContent: 'center',
-            }}>
-            {({navigation}) => (
+              justifyContent: "center",
+            }}
+          >
+            {({ navigation }) => (
               <ProfileHome
                 navigation={navigation}
                 settingModal={this.state.MakeContentModal}
@@ -81,25 +88,29 @@ class Profile extends React.Component {
           <Stack.Screen //ProfileEdit.js
             name="ProfileEdit"
             //component={ProfileEdit}
-            options={({navigation}) => ({
-              headerTitle: '프로필 편집',
-              headerTitleAlign: 'center',
+            options={({ navigation }) => ({
+              headerTitle: "프로필 편집",
+              headerTitleAlign: "center",
               headerRight: () => (
-                <TouchableOpacity style={{marginRight: 5}}>
-                  <Text style={{fontSize: 19, color: '#058FFD'}}>완료</Text>
+                <TouchableOpacity style={{ marginRight: 5 }}>
+                  <Text style={{ fontSize: 19, color: "#058FFD" }}>완료</Text>
                 </TouchableOpacity>
               ),
               headerLeft: () => (
                 <TouchableOpacity
-                  style={{marginLeft: 5}}
+                  style={{ marginLeft: 5 }}
                   onPress={() => {
                     navigation.goBack();
-                    this.props.TabNavigation.setOptions({tabBarVisible: true});
-                  }}>
-                  <Text style={{fontSize: 19, color: '#058FFD'}}>취소</Text>
+                    this.props.TabNavigation.setOptions({
+                      tabBarVisible: true,
+                    });
+                  }}
+                >
+                  <Text style={{ fontSize: 19, color: "#058FFD" }}>취소</Text>
                 </TouchableOpacity>
               ),
-            })}>
+            })}
+          >
             {() => <ProfileEdit TabNavigation={this.props.TabNavigation} />}
           </Stack.Screen>
 
@@ -107,8 +118,8 @@ class Profile extends React.Component {
             name="PostList"
             component={PostList}
             options={{
-              headerTitle: '게시물',
-              headerTitleAlign: 'center',
+              headerTitle: "게시물",
+              headerTitleAlign: "center",
             }}
           />
 
@@ -116,8 +127,8 @@ class Profile extends React.Component {
             name="Follow"
             component={Follow}
             options={{
-              headerTitle: 'm0ovie',
-              headerTitleAlign: 'center',
+              headerTitle: "m0ovie",
+              headerTitleAlign: "center",
             }}
           />
 
@@ -129,15 +140,15 @@ class Profile extends React.Component {
             name="NewPost"
             component={NewPost}
             options={{
-              headerTitle: '새 게시물',
-              headerTitleAlign: 'center',
+              headerTitle: "새 게시물",
+              headerTitleAlign: "center",
               headerStyle: {
-                backgroundColor: 'black',
+                backgroundColor: "black",
               },
-              headerTintColor: 'white',
+              headerTintColor: "white",
               headerRight: () => (
-                <TouchableOpacity style={{marginRight: 5}}>
-                  <Text style={{fontSize: 19, color: '#058FFD'}}>다음</Text>
+                <TouchableOpacity style={{ marginRight: 5 }}>
+                  <Text style={{ fontSize: 19, color: "#058FFD" }}>다음</Text>
                 </TouchableOpacity>
               ),
             }}
@@ -164,8 +175,8 @@ class Profile extends React.Component {
 
 const styles = StyleSheet.create({
   headerBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 5,
   },
 });

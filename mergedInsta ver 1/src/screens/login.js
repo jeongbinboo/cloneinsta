@@ -1,4 +1,4 @@
-//import axios from 'axios';
+import axios from 'axios';
 import React, {Component} from 'react';
 import {
   StyleSheet,
@@ -15,6 +15,29 @@ export default class Login extends Component {
     text: '',
     id: '',
     passwd: '',
+    token: '',
+  };
+  gotohome = () => {
+    this.props.navigation.navigate('Home');
+  };
+  signin = (id, passwd) => {
+    axios
+      .post('http://34.64.201.219:8080/api/v1/signin', {
+        user_id: id,
+        password: passwd,
+      })
+      .then((response) => {
+        if (this.state.id === '' || this.state.passwd === '')
+          alert('input ID or Password!');
+        else {
+          const tok = response.data.token;
+          this.setState({token: tok});
+          this.gotohome();
+        }
+      })
+      .catch((error) => {
+        alert('wrong');
+      });
   };
   render() {
     return (
@@ -46,11 +69,11 @@ export default class Login extends Component {
           <TouchableOpacity
             style={styles.login}
             onPress={() => {
-              this.props.navigation.navigate('Home');
+              this.signin(this.state.id, this.state.passwd);
             }}>
             <Text>로그인</Text>
           </TouchableOpacity>
-          <View style={{flexDirection: 'row', width: '90%', marginTop: 10}}>
+          <View style={{flexDirection: 'row', width: '90%', marginTop: 30}}>
             <View style={styles.hr}></View>
             <Text style={{color: '#AAAAAA'}}>또는</Text>
             <View style={styles.hr}></View>
@@ -103,7 +126,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    //fontFamily: 'Georgia',
+    fontFamily: 'Georgia',
     marginBottom: 15,
   },
   footer: {
@@ -111,7 +134,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     borderTopColor: '#DDDDDD',
-    //borderTopWidth: 1,
+    borderTopWidth: 1,
   },
   input: {
     height: 40,

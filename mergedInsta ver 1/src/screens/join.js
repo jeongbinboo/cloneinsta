@@ -9,13 +9,14 @@ import {
   Image,
   Animated,
 } from 'react-native';
-export default class App extends Component {
+
+export default class Join extends Component {
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>instagram</Text>
-          <Text style={{color: 'white', marginTop: 10}}>
+          <Text style={{fontSize: 13, marginTop: 10, color: 'gray'}}>
             친구들의 사진과 동영상을 보려면 가입하세요.
           </Text>
         </View>
@@ -24,10 +25,7 @@ export default class App extends Component {
             <View style={{flexDirection: 'row', width: '50%'}}>
               <Image
                 style={{height: 25, width: 25}}
-                source={{
-                  uri:
-                    'https://www.flaticon.com/svg/vstatic/svg/220/220342.svg?token=exp=1612551774~hmac=6a5cd30e6d0853380650625d1cac705b',
-                }}></Image>
+                source={require('../../image/facebook2.png')}></Image>
               <Text
                 style={{
                   marginLeft: 10,
@@ -44,8 +42,12 @@ export default class App extends Component {
             <Text style={{color: '#AAAAAA'}}>또는</Text>
             <View style={styles.hr}></View>
           </View>
-          <TouchableOpacity style={{color: '#0C98E2', marginTop: 20}}>
-            휴대폰 번호 또는 이메일 주소로 가입
+          <TouchableOpacity
+            style={{color: '#0C98E2', marginTop: 30, fontSize: 13}}
+            onPress={() => {
+              this.props.navigation.navigate('Signup');
+            }}>
+            <Text>휴대폰 번호 또는 이메일 주소로 가입</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.footer}>
@@ -56,9 +58,15 @@ export default class App extends Component {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 15}}>계정이 없으신가요? </Text>
-            <TouchableOpacity style={{color: '#0C98E2'}}>
-              가입하기
+            <Text style={{fontSize: 13, color: 'gray'}}>
+              이미 계정이 있으신가요?{' '}
+            </Text>
+            <TouchableOpacity
+              style={{color: '#0C98E2', fontSize: 14}}
+              onPress={() => {
+                this.props.navigation.navigate('Login');
+              }}>
+              <Text>로그인</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -74,15 +82,13 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 3,
-    backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
     fontSize: 40,
-    fontFamily: 'Georgia',
-    marginBottom: 15,
-    color: 'white',
+    //fontFamily: 'Georgia',
+    marginTop: 50,
   },
   content: {
     flex: 7,
@@ -92,7 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     borderTopColor: '#DDDDDD',
-    borderTopWidth: 1,
+    //borderTopWidth: 1,
   },
   login: {
     height: 40,

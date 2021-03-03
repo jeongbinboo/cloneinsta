@@ -1,6 +1,6 @@
-import React from 'react';
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
-import ClickedPic from './ClickedPic';
+import React from "react";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
+import ClickedPic from "../components/ClickedPic";
 
 const PostList = () => (
   <ScrollView style={styles.container}>

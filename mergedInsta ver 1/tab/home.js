@@ -1,31 +1,31 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React from 'react';
+import {Text, View} from 'react-native';
 //import {NavigationContainer} from '@react-navigation/native';
 //import {createStackNavigator} from '@react-navigation/stack';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 //import HomeScreen from '../../components/HomeScreen';
 //import CommentScreen from '../../components/CommentScreen';
-import Profile from "./profile/Profile";
-import HomeStack from "./home/navigation/HomeStack";
+import Profile from './profile/Profile';
+import HomeStack from './home/navigation/HomeStack';
 
 const ShoppingScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Shopping!</Text>
     </View>
   );
 };
 const UploadScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Upload!</Text>
     </View>
   );
 };
 const FindScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Find screen</Text>
     </View>
   );
@@ -38,7 +38,7 @@ const HeaderIcon = (props) => {
       size={37}
       color="white"
       backgroundColor="transparent"
-      style={{ paddingRight: "3%" }}
+      style={{paddingRight: '3%'}}
     />
   );
 };
@@ -50,22 +50,21 @@ const Home = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        activeTintColor: "black",
-        inactiveBackgroundColor: "white",
-        inactiveTintColor: "black",
-        activeBackgroundColor: "white",
+        activeTintColor: 'black',
+        inactiveBackgroundColor: 'white',
+        inactiveTintColor: 'black',
+        activeBackgroundColor: 'white',
         showLabel: false,
-      }}
-    >
+      }}>
       <Tab.Screen
         name="Home"
         component={HomeStack}
         options={{
-          tabBarIcon: ({ focused }) => {
-            let iconName = ""; //아이콘 눌렸을 때 변경
-            iconName = focused ? "ios-home" : "ios-home-outline";
+          tabBarIcon: ({focused}) => {
+            let iconName = ''; //아이콘 눌렸을 때 변경
+            iconName = focused ? 'ios-home' : 'ios-home-outline';
             return (
-              <Ionicons name={iconName} size={30} style={{ color: "black" }} />
+              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );
           },
         }}
@@ -74,11 +73,11 @@ const Home = () => {
         name="Find"
         component={FindScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            let iconName = "";
-            iconName = focused ? "ios-search-sharp" : "ios-search-outline";
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = focused ? 'ios-search-sharp' : 'ios-search-outline';
             return (
-              <Ionicons name={iconName} size={30} style={{ color: "black" }} />
+              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );
           },
         }}
@@ -87,13 +86,13 @@ const Home = () => {
         name="Upload"
         component={UploadScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            let iconName = "";
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
             iconName = focused
-              ? "ios-add-circle-sharp"
-              : "ios-add-circle-outline";
+              ? 'ios-add-circle-sharp'
+              : 'ios-add-circle-outline';
             return (
-              <Ionicons name={iconName} size={30} style={{ color: "black" }} />
+              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );
           },
         }}
@@ -102,11 +101,11 @@ const Home = () => {
         name="Shopping"
         component={ShoppingScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            let iconName = "";
-            iconName = focused ? "ios-basket" : "ios-basket-outline";
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = focused ? 'ios-basket' : 'ios-basket-outline';
             return (
-              <Ionicons name={iconName} size={30} style={{ color: "black" }} />
+              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );
           },
         }}
@@ -115,18 +114,17 @@ const Home = () => {
         name="Profile"
         //component={Profile}
         options={{
-          tabBarIcon: ({ focused }) => {
-            let iconName = "";
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
             iconName = focused
-              ? "ios-person-circle-sharp"
-              : "ios-person-circle-outline";
+              ? 'ios-person-circle-sharp'
+              : 'ios-person-circle-outline';
             return (
-              <Ionicons name={iconName} size={30} style={{ color: "black" }} />
+              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );
           },
-        }}
-      >
-        {({ navigation }) => <Profile TabNavigation={navigation} />}
+        }}>
+        {({navigation}) => <Profile TabNavigation={navigation} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

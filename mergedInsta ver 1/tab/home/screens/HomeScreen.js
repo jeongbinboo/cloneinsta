@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, {Component, useState} from 'react';
 import {
   Text,
   View,
@@ -8,49 +8,49 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
-} from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import ModalScreen from "../modals/modalScreen";
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import ModalScreen from '../modals/modalScreen';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+} from 'react-native-responsive-screen';
 
 const CONTENT_DATA = [
   //업로드 글 항목
   {
-    id: "1",
-    src: require("../images/1.jpg"),
-    name: "daaaayey",
+    id: '1',
+    src: require('../images/1.jpg'),
+    name: 'daaaayey',
   },
   {
-    id: "2",
-    src: require("../images/2.png"),
-    name: "yeri__k",
+    id: '2',
+    src: require('../images/2.png'),
+    name: 'yeri__k',
   },
   {
-    id: "3",
-    src: require("../images/3.jpg"),
-    name: "miseong_k",
+    id: '3',
+    src: require('../images/3.jpg'),
+    name: 'miseong_k',
   },
   {
-    id: "4",
-    src: require("../images/4.png"),
-    name: "m0ovie",
+    id: '4',
+    src: require('../images/4.png'),
+    name: 'm0ovie',
   },
 ];
 
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { isModal: false };
+    this.state = {isModal: false};
   }
   toggleModal() {
     this.setState({
       isModal: !this.state.isModal,
     });
   }
-  renderItem({ item }) {
+  renderItem({item}) {
     return (
       <Content
         name={item.name}
@@ -73,8 +73,8 @@ class HomeScreen extends Component {
         </View>
         <FlatList
           data={CONTENT_DATA}
-          renderItem={({ item }) => {
-            return this.renderItem({ item });
+          renderItem={({item}) => {
+            return this.renderItem({item});
           }}
           keyExtractor={(item) => item.id}
         />
@@ -90,20 +90,20 @@ class HomeScreen extends Component {
 
 const ContentIcon = (props) => {
   const btnName = props.name;
-  let tmpBtnName = "";
+  let tmpBtnName = '';
   const [isClicked, setIsClicked] = useState(true);
-  if (btnName === "ios-heart-outline") {
-    tmpBtnName = "ios-heart";
-  } else if (btnName === "ios-chatbubble-outline") {
-    tmpBtnName = "ios-chatbubble";
-  } else if (btnName === "ios-paper-plane-outline") {
-    tmpBtnName = "ios-paper-plane";
+  if (btnName === 'ios-heart-outline') {
+    tmpBtnName = 'ios-heart';
+  } else if (btnName === 'ios-chatbubble-outline') {
+    tmpBtnName = 'ios-chatbubble';
+  } else if (btnName === 'ios-paper-plane-outline') {
+    tmpBtnName = 'ios-paper-plane';
   } else {
-    tmpBtnName = "ios-bookmark";
+    tmpBtnName = 'ios-bookmark';
   }
   const isChat = () => {
-    if (btnName === "ios-chatbubble-outline") {
-      props.navigation.navigate("CommentScreen");
+    if (btnName === 'ios-chatbubble-outline') {
+      props.navigation.navigate('CommentScreen');
     } else {
       setIsClicked(!isClicked);
     }
@@ -112,14 +112,13 @@ const ContentIcon = (props) => {
     <TouchableOpacity
       onPress={() => {
         isChat();
-      }}
-    >
+      }}>
       <Ionicons
         name={isClicked ? btnName : tmpBtnName}
         size={30}
         color="black"
         backgroundColor="transparent"
-        style={{ paddingRight: wp("3%"), marginLeft: wp("1%") }}
+        style={{paddingRight: wp('3%'), marginLeft: wp('1%')}}
       />
     </TouchableOpacity>
   );
@@ -133,15 +132,14 @@ const LikesId = () => {
         size={25}
         color="black"
         style={{
-          marginRight: wp("1%"),
+          marginRight: wp('1%'),
         }}
       />
       <Text
         style={{
-          color: "black",
-          fontSize: hp("1.9%"),
-        }}
-      >
+          color: 'black',
+          fontSize: hp('1.9%'),
+        }}>
         M0ovie 님 외 여러명이 좋아합니다.
       </Text>
     </View>
@@ -154,16 +152,15 @@ const Comment = (props) => {
       <TouchableOpacity>
         <Text
           style={{
-            color: "black",
-            fontWeight: "bold",
-            fontSize: hp("2.4%"),
-            marginRight: "3%",
-          }}
-        >
+            color: 'black',
+            fontWeight: 'bold',
+            fontSize: hp('2.4%'),
+            marginRight: '3%',
+          }}>
           {props.name}
         </Text>
       </TouchableOpacity>
-      <Text style={{ color: "black" }}>{props.text}</Text>
+      <Text style={{color: 'black'}}>{props.text}</Text>
     </View>
   );
 };
@@ -187,11 +184,10 @@ class Content extends HomeScreen {
             <TouchableOpacity>
               <Text
                 style={{
-                  color: "black",
-                  fontWeight: "bold",
-                  fontSize: hp("2.7%"),
-                }}
-              >
+                  color: 'black',
+                  fontWeight: 'bold',
+                  fontSize: hp('2.7%'),
+                }}>
                 {this.props.name}
               </Text>
             </TouchableOpacity>
@@ -235,85 +231,85 @@ const Story = (props) => (
     <TouchableOpacity>
       <Ionicons name="ios-person-circle-outline" size={65} color="black" />
     </TouchableOpacity>
-    <Text style={{ fontSize: hp("1.6%"), color: "black" }}>{props.name}</Text>
+    <Text style={{fontSize: hp('1.6%'), color: 'black'}}>{props.name}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   storyView: {
-    height: hp("10%"),
-    alignItems: "center",
-    flexDirection: "row",
-    borderColor: "lightgray",
+    height: hp('10%'),
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderColor: 'lightgray',
     borderBottomWidth: 1,
   },
   storyId: {
-    width: wp("22%"),
-    marginLeft: wp("1%"),
-    marginRight: wp("3%"),
-    marginBottom: hp("1%"),
-    justifyContent: "center",
-    alignItems: "center",
+    width: wp('22%'),
+    marginLeft: wp('1%'),
+    marginRight: wp('3%'),
+    marginBottom: hp('1%'),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentView: {
-    height: hp("55%"),
-    marginVertical: hp("1%"),
+    height: hp('55%'),
+    marginVertical: hp('1%'),
   },
   contentId: {
-    height: hp("7%"),
+    height: hp('7%'),
     //marginTop: '1%',
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   contentIcon: {
-    width: wp("15%"),
-    marginLeft: wp("1%"),
-    marginRight: wp("1%"),
-    justifyContent: "center",
-    alignItems: "center",
+    width: wp('15%'),
+    marginLeft: wp('1%'),
+    marginRight: wp('1%'),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mainIcon: {
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingLeft: wp("1%"),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingLeft: wp('1%'),
   },
   content: {
-    width: wp("68%"),
-    flexDirection: "column",
-    justifyContent: "center",
+    width: wp('68%'),
+    flexDirection: 'column',
+    justifyContent: 'center',
     //alignItems:'center'
-    paddingLeft: wp("2%"),
+    paddingLeft: wp('2%'),
   },
   imgView: {
-    height: hp("30%"),
-    width: wp("100%"),
+    height: hp('30%'),
+    width: wp('100%'),
     //backgroundColor: 'blue',
   },
   iconView: {
-    height: hp("3%"),
-    flexDirection: "row",
-    marginTop: hp("2%"),
-    alignItems: "center",
-    justifyContent: "space-between",
+    height: hp('3%'),
+    flexDirection: 'row',
+    marginTop: hp('2%'),
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   likesId: {
-    marginTop: "2%",
-    height: hp("4%"),
-    paddingLeft: wp("2%"),
-    flexDirection: "row",
-    alignItems: "center",
+    marginTop: '2%',
+    height: hp('4%'),
+    paddingLeft: wp('2%'),
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   cmtView: {
-    height: hp("9%"),
+    height: hp('9%'),
   },
   cmt: {
-    height: hp("3.5%"),
-    paddingLeft: wp("2%"),
-    alignItems: "center",
-    flexDirection: "row",
+    height: hp('3.5%'),
+    paddingLeft: wp('2%'),
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 });
 

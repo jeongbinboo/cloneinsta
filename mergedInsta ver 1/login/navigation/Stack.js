@@ -4,7 +4,6 @@ import Ifpasswordforgot from "../screens/ifpasswordforgot";
 import Join from "../screens/join";
 import Login from "../screens/login";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Sample from "../screens/sample";
 import Home from "../../tab/home";
 import SignUp from "../screens/signup";
 const Stack = createStackNavigator();

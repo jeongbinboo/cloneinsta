@@ -1,7 +1,7 @@
-import React from 'react';
-import StackNavigation from './src/navigations/Stack';
-import {NavigationContainer} from '@react-navigation/native';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import React from "react";
+import StackNavigation from "./login/navigation/Stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 //navigation test
 /*

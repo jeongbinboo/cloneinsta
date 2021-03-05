@@ -3,9 +3,15 @@ import {StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
 
 const PictureList = ({navigation}) => (
   <View style={styles.container}>
-    <Text>ㅎㅇ</Text>
-    {/*
     <View style={{flexDirection: 'row'}}>
+      <TouchableOpacity onPress={() => navigation.push('PostList')}>
+        <View>
+          <Image
+            style={{height: 130, width: 130}}
+            source={require('../images/pic7.jpg')}
+          />
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.push('PostList')}>
         <View>
           <Image
@@ -14,51 +20,7 @@ const PictureList = ({navigation}) => (
           />
         </View>
       </TouchableOpacity>
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic2.jpg')}
-      />
-
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic3.jpg')}
-      />
     </View>
-
-    <View style={{flexDirection: 'row'}}>
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic4.jpg')}
-      />
-
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic5.jpg')}
-      />
-
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic6.jpg')}
-      />
-    </View>
-
-    <View style={{flexDirection: 'row'}}>
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic7.jpg')}
-      />
-
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic8.jpg')}
-      />
-
-      <Image
-        style={{height: 130, width: 130}}
-        source={require('../images/pic9.jpg')}
-      />
-    </View>
-    */}
   </View>
 );
 

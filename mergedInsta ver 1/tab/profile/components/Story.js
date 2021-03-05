@@ -1,30 +1,17 @@
 import React from 'react';
 import {StyleSheet, View, Text, ScrollView, Image} from 'react-native';
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
+//meh
 const Story = () => (
-  /*
-  <ScrollView
-    horizontal={true}
-    showsHorizontalScrollIndicator={true}
-    onMomentumScrollEnd={() => {
-      console.log('Scrolling is End');
-    }}>
-    <View>
-      <Image
-        style={{height: 100, width: '90%', margin: 5}}
-        source={require('../images/story.jpg')}
-      />
-    </View>
-  </ScrollView>
-  */
-  <View>
-    <Image
-      style={{height: 100, width: '90%', margin: 5}}
-      source={require('../images/story.jpg')}
-    />
+  <View style={styles.container}>
+    <AntDesign name={'meh'} size={70} color={'#3F3F3F'} />
   </View>
 );
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    margin: 10,
+  },
+});
 
 export default Story;

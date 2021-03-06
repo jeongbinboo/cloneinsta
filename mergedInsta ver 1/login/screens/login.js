@@ -65,7 +65,7 @@ export default class Login extends Component {
             }}
             style={styles.forgot}
           >
-            비밀번호를 잊으셨나요?
+            <Text>비밀번호를 잊으셨나요?</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.login}
@@ -73,7 +73,7 @@ export default class Login extends Component {
               this.signin(this.state.id, this.state.passwd);
             }}
           >
-            로그인
+            <Text>로그인</Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", width: "90%", marginTop: 30 }}>
             <View style={styles.hr}></View>
@@ -86,7 +86,7 @@ export default class Login extends Component {
               source={require("../images/facebook.png")}
             ></Image>
             <TouchableOpacity style={{ marginLeft: 10, color: "#0C98E2" }}>
-              Facebook으로 로그인
+              <Text>Facebook으로 로그인</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -106,7 +106,7 @@ export default class Login extends Component {
                 this.props.navigation.navigate("Join");
               }}
             >
-              가입하기
+              <Text>가입하기</Text>
             </TouchableOpacity>
           </View>
         </View>

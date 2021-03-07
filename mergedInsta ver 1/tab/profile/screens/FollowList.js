@@ -14,7 +14,7 @@ const TopTab = createMaterialTopTabNavigator();
 
 //component
 //import FollwerItem from '../components/FollowerItem';
-
+//error while updating
 const FollowList = ({route, navigation}) => {
   const {FollowFlag} = route.params;
   return (

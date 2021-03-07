@@ -1,11 +1,11 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import Ifpasswordforgot from "../screens/ifpasswordforgot";
-import Join from "../screens/join";
-import Login from "../screens/login";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "../../tab/home";
-import SignUp from "../screens/signup";
+import React from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
+import Ifpasswordforgot from '../screens/ifpasswordforgot';
+import Join from '../screens/join';
+import Login from '../screens/login';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Home from '../../tab/home';
+import SignUp from '../screens/signup';
 const Stack = createStackNavigator();
 
 const StackNavigation = () => {
@@ -14,22 +14,22 @@ const StackNavigation = () => {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Join"
         component={Join}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Ifpasswordforgot"
         component={Ifpasswordforgot}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen name="Signup" component={SignUp} />
     </Stack.Navigator>

@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 class ModalContent extends Component {
   render() {
@@ -24,7 +28,8 @@ class ModalScreen extends Component {
         <View style={styles.modalView}>
           <View style={styles.content}>
             <TouchableOpacity>
-              <Text style={{color: 'firebrick', fontSize: 18, margin: 10}}>
+              <Text
+                style={{color: 'firebrick', fontSize: hp(2.5), margin: hp(2)}}>
                 신고
               </Text>
             </TouchableOpacity>
@@ -49,45 +54,43 @@ class ModalScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    height: '100%',
-    width: '100%',
+    height: hp('100%'),
+    width: wp('100%'),
     backgroundColor: 'transparent',
   },
   background: {
     position: 'absolute',
-    height: '100%',
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    height: hp('100%'),
+    width: wp('100%'),
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
-    marginHorizontal: 20,
+    marginHorizontal: wp('5%'),
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: '97%',
-    backgroundColor: 'dimgrey',
+    marginTop: hp('33%'),
+    backgroundColor: 'white',
   },
   content: {
     alignItems: 'center',
-    width: '90%',
+    width: wp('90%'),
     borderBottomColor: 'grey',
     borderBottomWidth: 1,
   },
   doneContent: {
     alignItems: 'center',
-    width: '90%',
-    marginTop: '5%',
-    backgroundColor: 'dimgrey',
+    width: wp('90%'),
+    marginTop: hp('3%'),
+    backgroundColor: 'white',
     borderRadius: 10,
   },
   doneText: {
-    color: 'white',
-    fontSize: 15,
-    margin: 10,
+    fontSize: hp(2.5),
+    margin: hp(2),
   },
   titleText: {
-    color: 'white',
-    fontSize: 18,
-    margin: 10,
+    fontSize: hp(2.5),
+    margin: hp(2),
   },
 });
 

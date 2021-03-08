@@ -24,17 +24,17 @@ const COMMENT_DATA = [
   {
     id: '1',
     name: 'James_Jung',
-    content: '와 정말 귀여워요~',
+    content: '와 정말 귀여워요~a',
   },
   {
     id: '2',
     name: 'yeri__k',
-    content: '우와~',
+    content: '우와~b',
   },
   {
     id: '3',
     name: 'James_Jung',
-    content: '와 정말 귀여워요~',
+    content: '와 정말 귀여워요~c',
   },
   {
     id: '4',
@@ -89,6 +89,16 @@ const COMMENT_DATA = [
   {
     id: '14',
     name: 'yeri__k',
+    content: '우와x~',
+  },
+  {
+    id: '15',
+    name: 'yeri__k',
+    content: '우와y~',
+  },
+  {
+    id: '16',
+    name: 'yeri__k',
     content: '우와z~',
   },
 ];
@@ -97,10 +107,11 @@ const renderItem = ({item}) => (
   <CmtList name={item.name} content={item.content} />
 );
 
-const CommentScreen = () => {
+const CommentScreen = ({TabNavigation}) => {
+  TabNavigation.setOptions({tabBarVisible: false});
   return (
-    <View style={styles.container}>
-      <View style={styles.Cmtcontainer}>
+    <View style={{flex: 1}}>
+      <View style={styles.container}>
         <FlatList
           data={COMMENT_DATA}
           renderItem={({item}) => {
@@ -109,10 +120,16 @@ const CommentScreen = () => {
           keyExtractor={(item) => item.id}
         />
       </View>
-      <KeyboardAwareScrollView style={styles.inputView}>
-        <Input />
-      </KeyboardAwareScrollView>
+      <InputScreen />
     </View>
+  );
+};
+
+const InputScreen = () => {
+  return (
+    <KeyboardAwareScrollView style={styles.inputView}>
+      <Input />
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -120,37 +137,22 @@ const Input = () => {
   const [value, onChangeText] = React.useState('');
   return (
     <>
-      <View style={styles.IconView}>
-        <Emoji />
-        <Emoji />
-        <Emoji />
-        <Emoji />
-        <Emoji />
-        <Emoji />
-        <Emoji />
-        <Emoji />
-      </View>
       <View style={styles.inputTextView}>
         <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => onChangeText(text)}
-          value={value}
-          placeholder={'댓글 달기...'}
-          placeholderTextColor="grey"
-        />
+        <View style={styles.submitView}>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => onChangeText(text)}
+            value={value}
+            placeholder={'댓글 달기...'}
+            placeholderTextColor="grey"
+          />
+          <TouchableOpacity style={styles.submitBtn}>
+            <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </>
-  );
-};
-
-const Emoji = () => {
-  return (
-    <Ionicons
-      name="ios-happy"
-      size={hp('4.3%')}
-      style={{marginLeft: wp('2%'), marginRight: wp('2%')}}
-    />
   );
 };
 
@@ -217,14 +219,14 @@ const CmtLikes = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.9,
   },
   Cmtcontainer: {
-    flex: 0.83,
+    //flex: 1,
+    //justifyContent: 'flex-end',
   },
   cmtView: {
-    flex: 1,
-    //height: '20%',
+    height: hp(7),
     marginTop: hp('1%'),
     marginBottom: hp('1%'),
     alignItems: 'center',
@@ -250,7 +252,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputView: {
-    flex: 1,
+    flex: 0.1,
     width: wp('100%'),
     //height: hp('15%'),
     position: 'absolute',
@@ -274,12 +276,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  textInput: {
-    height: hp('6.5%'),
-    width: wp('80%'),
+  submitView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    //justifyContent: 'flex-end',
+    width: wp('82%'),
     borderRadius: 10,
     borderWidth: 1,
     borderColor: 'grey',
+  },
+  submitBtn: {
+    width: wp('10%'),
+    color: 'transparent',
+    alignItems: 'center',
+  },
+  textInput: {
+    height: hp('6.5%'),
+    width: wp('70%'),
     marginLeft: wp('1%'),
   },
 });

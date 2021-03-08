@@ -6,6 +6,7 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  TextInput,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
@@ -38,6 +39,21 @@ const CONTENT_DATA = [
     src: require('../images/4.png'),
     name: 'm0ovie',
   },
+  {
+    id: '5',
+    src: require('../images/5.jpg'),
+    name: 'm0ovie',
+  },
+  {
+    id: '6',
+    src: require('../images/6.jpg'),
+    name: 'm0ovie',
+  },
+  {
+    id: '7',
+    src: require('../images/7.jpg'),
+    name: 'm0ovie',
+  },
 ];
 
 class HomeScreen extends Component {
@@ -66,9 +82,12 @@ class HomeScreen extends Component {
         <View style={styles.storyView}>
           <ScrollView horizontal={true}>
             <Story name="내 스토리" />
-            <Story name="M0ovie" />
+            <Story name="yeri__k" />
+            <Story name="m0ovie" />
             <Story name="negative_bin" />
             <Story name="James_Jung" />
+            <Story name="daaaayey" />
+            <Story name="miseong_k" />
           </ScrollView>
         </View>
         <FlatList
@@ -116,8 +135,6 @@ const ContentIcon = (props) => {
       <Ionicons
         name={isClicked ? btnName : tmpBtnName}
         size={30}
-        color="black"
-        backgroundColor="transparent"
         style={{paddingRight: wp('3%'), marginLeft: wp('1%')}}
       />
     </TouchableOpacity>
@@ -135,12 +152,13 @@ const LikesId = () => {
           marginRight: wp('1%'),
         }}
       />
+      <Text style={{fontWeight: 'bold', fontSize: hp('1.9%')}}>m0ovie</Text>
       <Text
         style={{
           color: 'black',
           fontSize: hp('1.9%'),
         }}>
-        M0ovie 님 외 여러명이 좋아합니다.
+        님 외 여러명이 좋아합니다.
       </Text>
     </View>
   );
@@ -161,6 +179,27 @@ const Comment = (props) => {
         </Text>
       </TouchableOpacity>
       <Text style={{color: 'black'}}>{props.text}</Text>
+    </View>
+  );
+};
+
+const Input = () => {
+  return (
+    <View style={styles.cmtInput}>
+      <Ionicons
+        name="ios-person-circle-outline"
+        size={35}
+        color="black"
+        style={{
+          marginRight: wp(1),
+          marginLeft: wp(1),
+        }}
+      />
+      <TextInput
+        multiline
+        placeholder={'댓글 달기..'}
+        placeholderTextColor="grey"
+      />
     </View>
   );
 };
@@ -193,13 +232,12 @@ class Content extends HomeScreen {
             </TouchableOpacity>
           </View>
           <View style={styles.contentIcon}>
-            <TouchableOpacity>
-              <Ionicons.Button
+            <TouchableOpacity onPress={this.props.modalHandler}>
+              <Ionicons
                 name="ios-ellipsis-horizontal"
                 size={22}
                 color="black"
                 backgroundColor="transparent"
-                onPress={this.props.modalHandler}
               />
             </TouchableOpacity>
           </View>
@@ -220,6 +258,7 @@ class Content extends HomeScreen {
         <View style={styles.cmtView}>
           <Comment name="daaaayey" text="배고프다" />
           <Comment name="miseongk_" text="나두나두~" />
+          <Input />
         </View>
       </View>
     );
@@ -241,14 +280,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   storyView: {
-    height: hp('10%'),
+    height: hp('12%'),
     alignItems: 'center',
     flexDirection: 'row',
     borderColor: 'lightgray',
     borderBottomWidth: 1,
   },
   storyId: {
-    width: wp('22%'),
+    width: wp('20%'),
     marginLeft: wp('1%'),
     marginRight: wp('3%'),
     marginBottom: hp('1%'),
@@ -256,7 +295,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentView: {
-    height: hp('55%'),
+    height: hp('80%'),
     marginVertical: hp('1%'),
   },
   contentId: {
@@ -284,7 +323,7 @@ const styles = StyleSheet.create({
     paddingLeft: wp('2%'),
   },
   imgView: {
-    height: hp('30%'),
+    height: hp('50%'),
     width: wp('100%'),
     //backgroundColor: 'blue',
   },
@@ -303,13 +342,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cmtView: {
-    height: hp('9%'),
+    height: hp('14%'),
   },
   cmt: {
     height: hp('3.5%'),
     paddingLeft: wp('2%'),
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  cmtInput: {
+    height: hp('5%'),
+    flexDirection: 'row',
+    marginTop: hp(1),
   },
 });
 

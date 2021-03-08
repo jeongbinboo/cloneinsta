@@ -31,18 +31,6 @@ const FindScreen = () => {
   );
 };
 
-const HeaderIcon = (props) => {
-  return (
-    <Ionicons.Button
-      name={props.name}
-      size={37}
-      color="white"
-      backgroundColor="transparent"
-      style={{paddingRight: '3%'}}
-    />
-  );
-};
-
 //const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -58,7 +46,7 @@ const Home = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeStack}
+        //component={HomeStack}
         options={{
           tabBarIcon: ({focused}) => {
             let iconName = ''; //아이콘 눌렸을 때 변경
@@ -67,8 +55,9 @@ const Home = () => {
               <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );
           },
-        }}
-      />
+        }}>
+        {({navigation}) => <HomeStack TabNavigation={navigation} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Find"
         component={FindScreen}

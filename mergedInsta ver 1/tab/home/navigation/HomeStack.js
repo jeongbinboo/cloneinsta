@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import CommentScreen from '../screens/CommentScreen';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import ModalScreen from '../modals/modalScreen';
 
 const HeaderIcon = (props) => {
   return (
@@ -42,6 +43,7 @@ class HomeStack extends React.Component {
                 fontFamily: 'Norican-Regular',
                 fontSize: 30,
               },
+              headerLeft: null, //remove back button
               headerRight: () => (
                 <View
                   style={{
@@ -55,9 +57,10 @@ class HomeStack extends React.Component {
               ),
             }}
           />
+
           <Stack.Screen
             name="CommentScreen"
-            component={CommentScreen}
+            //component={CommentScreen}
             options={({navigation}) => ({
               headerTitle: '댓글',
               headerTitleAlign: 'center',
@@ -69,13 +72,15 @@ class HomeStack extends React.Component {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.goBack();
+                    this.props.TabNavigation.setOptions({tabBarVisible: true});
                   }}>
                   <HeaderIcon name="ios-chevron-back" />
                 </TouchableOpacity>
               ),
               headerRight: () => <HeaderIcon name="ios-paper-plane-outline" />,
-            })}
-          />
+            })}>
+            {() => <CommentScreen TabNavigation={this.props.TabNavigation} />}
+          </Stack.Screen>
         </Stack.Navigator>
       </>
     );

@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 
-//import axios from 'axios';
+import axios from 'axios';
 
 /*
 axios
@@ -12,8 +12,8 @@ axios
   .catch((Error) => {
     console.log(Error);
   });
-*/
 
+*/
 //이거 됨
 
 /*
@@ -50,6 +50,10 @@ axios({
   */
 
 class NewPost extends React.Component {
+  state = {};
+
+  createPost = (content) => {};
+
   render() {
     return (
       <View style={styles.container}>
@@ -75,3 +79,17 @@ const styles = StyleSheet.create({
 });
 
 export default NewPost;
+
+/*
+//POST signin
+{
+    "user_id": "4432",
+    "password": "4432"
+}
+
+//POST posts
+{
+    "title": "hi",
+    "content": "movie"
+}
+*/

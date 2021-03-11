@@ -1,10 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
 
-const PictureList = ({navigation}) => (
+const PictureList = ({navigation, toIndex}) => (
   <View style={styles.container}>
     <View style={{flexDirection: 'row'}}>
-      <TouchableOpacity onPress={() => navigation.push('PostList')}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.push('PostList', {picId: 0});
+        }}>
         <View>
           <Image
             style={{height: 130, width: 130}}
@@ -12,7 +15,10 @@ const PictureList = ({navigation}) => (
           />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.push('PostList')}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.push('PostList', {picId: 1});
+        }}>
         <View>
           <Image
             style={{height: 130, width: 130}}

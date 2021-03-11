@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 import ClickedPic from '../components/ClickedPic';
 
@@ -34,51 +35,59 @@ const PostData = [
   },
 ];
 
-//console.log(PostData);
-//console.log(PostData[0].comment);
-//console.log(PostData[0].comment[0]);
-
-/*
-flatRef.current.scrollToIndex({
-  animated: false,
-  index: index,
-  viewPosition: 0.5,
-});*/
-
-/*
-const PostList = () => (
-  <FlatList
-    //ref={(list) => (this.myFlatList = list)}
-    style={{backgroundColor: 'white'}}
-    data={PostData}
-    renderItem={({item}) => {
-      return <ClickedPic item={item} PostData={PostData} />;
-    }}
-  />
-);
-*/
-
 class PostList extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
   }
 
+  /*
+  handlePostFocus = () => {
+    const {scrollHeight, clientHeight} = this.myRef;
+    this.myRef.scrollTop = scrollHeight - clientHeight;
+  };
+*/
+  /*
+  toIndex = () => {
+    this.myRef.scrollToIndex({
+      index: 1,
+    });
+  };
+*/
+
+  toIndex = (idx) => {
+    this.myRef.scrollToIndex({
+      index: idx,
+    });
+  };
+
   render() {
+    const {picId} = this.props.route.params;
+    console.log(this.props.route.params.picId);
     return (
       <>
+        {/* <Button
+          title="밑으로"
+          //onPress={() => this.myRef.current.scrollToEnd({animated: false})}
+          //onPress={() => this.myRef.handlePostFocus()}
+          //onPress={() => this.myRef.current.scrollTo(10, 10)}
+          onPress={(idx) => this.toIndex(1)}
+        /> */}
         <FlatList
-          //ref={this.myRef}
-          ref={this.myRef}
+          //ref={(ref) => (this.myRef = ref)}
+          initialScrollIndex={picId}
+          //onScrollToIndexFailed={0}
+          onScrollToIndexFailed={() => {
+            console.log('error');
+          }}
           onContentSizeChange={() => {
             //this.myRef.current.scrollToEnd({animated: false}); //이거됨
           }}
+          on
           style={{backgroundColor: 'white'}}
           data={PostData}
           renderItem={({item}) => {
-            return (
-              <ClickedPic item={item} PostData={PostData} myRef={this.myRef} />
-            );
+            return <ClickedPic item={item} PostData={PostData} />;
           }}
         />
       </>

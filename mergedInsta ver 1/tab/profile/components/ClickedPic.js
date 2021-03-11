@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 
 //nav
@@ -14,8 +14,9 @@ import CommentScreen from '../screens/CommentScreen';
 
 //재사용할 컴포넌트
 
-const ClickedPic = ({item, PostData, myRef}) => {
+const ClickedPic = ({item, PostData, toIndex}) => {
   const navigation = useNavigation();
+
   return (
     <View
       style={styles.container}

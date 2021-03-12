@@ -8,151 +8,79 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {
-  KeyboardAwareFlatList,
-  KeyboardAwareScrollView,
-} from 'react-native-keyboard-aware-scroll-view';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {KeyboardAvoidingView} from 'react-native';
 
-const COMMENT_DATA = [
+let COMMENT_DATA = [
   //댓글 목록
   {
-    id: '1',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~a',
-  },
-  {
-    id: '2',
+    id: '0',
     name: 'yeri__k',
-    content: '우와~b',
-  },
-  {
-    id: '3',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~c',
-  },
-  {
-    id: '4',
-    name: 'yeri__k',
-    content: '우와~',
-  },
-  {
-    id: '5',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~',
-  },
-  {
-    id: '6',
-    name: 'yeri__k',
-    content: '우와~',
-  },
-  {
-    id: '7',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~',
-  },
-  {
-    id: '8',
-    name: 'yeri__k',
-    content: '우와~',
-  },
-  {
-    id: '9',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~',
-  },
-  {
-    id: '10',
-    name: 'yeri__k',
-    content: '우와~',
-  },
-  {
-    id: '11',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~',
-  },
-  {
-    id: '12',
-    name: 'yeri__k',
-    content: '우와~',
-  },
-  {
-    id: '13',
-    name: 'James_Jung',
-    content: '와 정말 귀여워요~',
-  },
-  {
-    id: '14',
-    name: 'yeri__k',
-    content: '우와x~',
-  },
-  {
-    id: '15',
-    name: 'yeri__k',
-    content: '우와y~',
-  },
-  {
-    id: '16',
-    name: 'yeri__k',
-    content: '우와z~',
+    content: '첫번째 댓글',
   },
 ];
 
-const renderItem = ({item}) => (
-  <CmtList name={item.name} content={item.content} />
+const renderItem = ({item}, func) => (
+  <CmtList name={item.name} content={item.content} func={func} />
 );
 
 const CommentScreen = ({TabNavigation}) => {
-  TabNavigation.setOptions({tabBarVisible: false});
+  //TabNavigation.setOptions({tabBarVisible: false});
+  const [value, onChangeText] = React.useState('');
+  const [id, setId] = React.useState(1);
+  const flatListRef = React.useRef();
+  const myRef = React.useRef();
+  const scrollScreen = () => {
+    flatListRef.current.scrollToOffset({animated: true, offset: 0});
+  };
+  const focusInput = () => {
+    myRef.current.focus();
+  };
+  const addCmt = () => {
+    const newCmt = COMMENT_DATA.concat({
+      id: id,
+      name: 'anonymous',
+      content: value,
+    });
+    COMMENT_DATA = newCmt;
+    setId(id + 1);
+    onChangeText('');
+  };
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>
         <FlatList
+          ref={flatListRef}
           data={COMMENT_DATA}
           renderItem={({item}) => {
-            return renderItem({item});
+            return renderItem({item}, focusInput);
           }}
           keyExtractor={(item) => item.id}
         />
       </View>
-      <InputScreen />
-    </View>
-  );
-};
-
-const InputScreen = () => {
-  return (
-    <KeyboardAwareScrollView style={styles.inputView}>
-      <Input />
-    </KeyboardAwareScrollView>
-  );
-};
-
-const Input = () => {
-  const [value, onChangeText] = React.useState('');
-  return (
-    <>
-      <View style={styles.inputTextView}>
-        <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
-        <View style={styles.submitView}>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(text) => onChangeText(text)}
-            value={value}
-            placeholder={'댓글 달기...'}
-            placeholderTextColor="grey"
-          />
-          <TouchableOpacity style={styles.submitBtn}>
-            <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
-          </TouchableOpacity>
+      <View style={styles.inputView}>
+        <View style={styles.inputTextView}>
+          <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
+          <View style={styles.submitView}>
+            <TextInput
+              ref={myRef}
+              style={styles.textInput}
+              onChangeText={(text) => onChangeText(text)}
+              value={value}
+              placeholder={'댓글 달기...'}
+              placeholderTextColor="grey"
+              onFocus={scrollScreen}
+            />
+            <TouchableOpacity style={styles.submitBtn} onPress={addCmt}>
+              <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </>
+    </View>
   );
 };
 
@@ -185,7 +113,7 @@ const CmtList = (props) => {
             }}>
             1시간
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={props.func}>
             <Text
               style={{
                 fontWeight: 'bold',
@@ -291,7 +219,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInput: {
-    height: hp('6.5%'),
+    height: hp('5%'),
     width: wp('70%'),
     marginLeft: wp('1%'),
   },

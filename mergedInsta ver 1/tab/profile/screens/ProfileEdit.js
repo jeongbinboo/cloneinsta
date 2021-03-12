@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 
 const ProfileEdit = ({TabNavigation}) => {
-  TabNavigation.setOptions({tabBarVisible: false});
+  //TabNavigation.setOptions({tabBarVisible: false});
+  useEffect(() => {
+    TabNavigation.setOptions({tabBarVisible: false});
+  });
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View>

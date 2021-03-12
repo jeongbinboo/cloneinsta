@@ -1,12 +1,12 @@
 import React from 'react';
 import {StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
 
-const PictureList = ({navigation, toIndex}) => (
+const PictureList = ({navigation, toIndex, TabNavigation}) => (
   <View style={styles.container}>
     <View style={{flexDirection: 'row'}}>
       <TouchableOpacity
         onPress={() => {
-          navigation.push('PostList', {picId: 0});
+          navigation.push('PostList', {picId: 0, TabNavigation: TabNavigation});
         }}>
         <View>
           <Image

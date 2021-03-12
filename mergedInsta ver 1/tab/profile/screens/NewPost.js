@@ -50,11 +50,20 @@ axios({
   */
 
 class NewPost extends React.Component {
-  state = {};
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
+    this.props.TabNavigation.setOptions({tabBarVisible: false});
+  }
 
   createPost = (content) => {};
 
   render() {
+    //this.props.TabNavigation.setOptions({tabBarVisible: false});
+
     return (
       <View style={styles.container}>
         <View style={styles.current}>

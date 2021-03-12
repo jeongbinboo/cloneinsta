@@ -46,11 +46,15 @@ class StackNav extends React.Component {
                 </TouchableOpacity>
               </View>
             ),
+            headerLeft: () => {
+              <View></View>;
+            },
             //headerTitleAlign: 'center',  //타이틀 중앙정렬
             justifyContent: 'center',
           }}>
           {({navigation}) => (
             <ProfileHome
+              TabNavigation={this.props.TabNavigation}
               navigation={navigation}
               settingModal={this.props.MakeContentModal}
             />
@@ -87,10 +91,10 @@ class StackNav extends React.Component {
         <Stack.Screen
           name="PostList"
           component={PostList}
-          options={{
+          options={({}) => ({
             headerTitle: '게시물',
             headerTitleAlign: 'center',
-          }}
+          })}
         />
 
         <Stack.Screen
@@ -106,8 +110,8 @@ class StackNav extends React.Component {
 
         <Stack.Screen
           name="NewPost"
-          component={NewPost}
-          options={{
+          //component={NewPost}
+          options={({navigation}) => ({
             headerTitle: '새 게시물',
             headerTitleAlign: 'center',
             headerStyle: {
@@ -119,8 +123,26 @@ class StackNav extends React.Component {
                 <Text style={{fontSize: 19, color: '#058FFD'}}>다음</Text>
               </TouchableOpacity>
             ),
-          }}
-        />
+            headerLeft: () => (
+              <TouchableOpacity
+                style={{marginLeft: 5}}
+                onPress={() => {
+                  navigation.goBack();
+                  this.props.TabNavigation.setOptions({
+                    tabBarVisible: true,
+                  });
+                }}>
+                <AntDesign
+                  name={'arrowleft'}
+                  size={25}
+                  color={'white'}
+                  style={{margin: 5}}
+                />
+              </TouchableOpacity>
+            ),
+          })}>
+          {() => <NewPost TabNavigation={this.props.TabNavigation} />}
+        </Stack.Screen>
 
         <Stack.Screen
           name="CommentScreen"
@@ -128,8 +150,34 @@ class StackNav extends React.Component {
           options={({navigation}) => ({
             headerTitle: '댓글',
             headerTitleAlign: 'center',
+            headerLeft: () => (
+              <TouchableOpacity
+                style={{marginLeft: 5}}
+                onPress={() => {
+                  navigation.goBack();
+                  this.props.TabNavigation.setOptions({
+                    tabBarVisible: true,
+                  });
+                }}>
+                <AntDesign
+                  name={'arrowleft'}
+                  size={25}
+                  color={'#3F3F3F'}
+                  style={{margin: 5}}
+                />
+              </TouchableOpacity>
+            ),
           })}
         />
+
+        {/* <Stack.Screen
+          name="CommentScreen"
+          options={({navigation}) => ({
+            headerTitle: '댓글',
+            headerTitleAlign: 'center',
+          })}>
+          {() => <CommentScreen TabNavigation={this.props.TabNavigation} />}
+        </Stack.Screen> */}
       </Stack.Navigator>
     );
   }

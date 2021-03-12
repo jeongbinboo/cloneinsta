@@ -64,6 +64,7 @@ class ProfileHome extends React.Component {
           </ScrollView>
 
           <PictureDisplay
+            TabNavigation={this.props.TabNavigation}
             navigation={this.props.navigation}
             switchPicListFlag={this.state.switchPicListFlag}
             mineToTag={() => this.mineToTag()}
@@ -133,6 +134,7 @@ const PictureDisplay = ({
   switchPicListFlag,
   mineToTag,
   tagToMine,
+  TabNavigation,
 }) => (
   <View>
     <View style={{flexDirection: 'row'}}>
@@ -154,7 +156,7 @@ const PictureDisplay = ({
     </View>
 
     {switchPicListFlag === 1 ? (
-      <PictureList navigation={navigation} />
+      <PictureList navigation={navigation} TabNavigation={TabNavigation} />
     ) : (
       <TagPicList />
     )}

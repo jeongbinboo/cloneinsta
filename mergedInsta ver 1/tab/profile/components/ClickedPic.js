@@ -14,7 +14,7 @@ import CommentScreen from '../screens/CommentScreen';
 
 //재사용할 컴포넌트
 
-const ClickedPic = ({item, PostData, toIndex}) => {
+const ClickedPic = ({item, PostData, TabNavigation}) => {
   const navigation = useNavigation();
 
   return (
@@ -36,9 +36,10 @@ const ClickedPic = ({item, PostData, toIndex}) => {
           navigation={navigation}
           item={item}
           PostData={PostData}
+          TabNavigation={TabNavigation}
         />
         <PostedText item={item} />
-        <Comment item={item} />
+        <Comment navigation={navigation} item={item} PostData={PostData} />
         <Text style={{marginLeft: 10, marginTop: 5, color: '#6e6e6e'}}>
           {item.timeStamp}
         </Text>
@@ -71,7 +72,7 @@ const PostedBy = () => (
   </View>
 );
 
-const BtnToExpression = ({navigation, item, PostData}) => {
+const BtnToExpression = ({navigation, item, PostData, TabNavigation}) => {
   //console.log(PostData);
   return (
     <View style={styles.BtnExpView}>
@@ -82,9 +83,10 @@ const BtnToExpression = ({navigation, item, PostData}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.Btn}
-            onPress={() =>
-              navigation.navigate('CommentScreen', {id: item.id, pd: PostData})
-            }>
+            onPress={() => {
+              navigation.navigate('CommentScreen', {id: item.id, pd: PostData});
+              TabNavigation.setOptions({tabBarVisible: false});
+            }}>
             <Ionicons name={'chatbubble-outline'} size={30} color={'#3F3F3F'} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.Btn}>
@@ -120,9 +122,12 @@ const PostedText = ({item}) => (
   </View>
 );
 
-const Comment = ({item}) => (
+const Comment = ({item, navigation, PostData}) => (
   <View>
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('CommentScreen', {id: item.id, pd: PostData})
+      }>
       <Text style={{marginLeft: 10, marginTop: 5, color: '#6e6e6e'}}>
         댓글 {item.commmentNum}개 모두 보기
       </Text>

@@ -21,6 +21,12 @@ class Profile extends React.Component {
     this.setState({
       MakeContentModal: !this.state.MakeContentModal,
     });
+    if (this.state.MakeContentModal === true) {
+      this.props.TabNavigation.setOptions({tabBarVisible: true});
+    }
+    if (this.state.MakeContentModal === false) {
+      this.props.TabNavigation.setOptions({tabBarVisible: false});
+    }
     console.log(this.state.MakeContentModal);
   }
 
@@ -28,6 +34,12 @@ class Profile extends React.Component {
     this.setState({
       SettingModal: !this.state.SettingModal,
     });
+    if (this.state.SettingModal === true) {
+      this.props.TabNavigation.setOptions({tabBarVisible: true});
+    }
+    if (this.state.SettingModal === false) {
+      this.props.TabNavigation.setOptions({tabBarVisible: false});
+    }
   }
 
   render() {

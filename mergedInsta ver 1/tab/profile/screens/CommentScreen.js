@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {
   Button,
   View,
@@ -19,22 +20,49 @@ import {
 } from 'react-native-responsive-screen';
 import {KeyboardAvoidingView} from 'react-native';
 
+let idx = 0;
+
 const renderItem = ({item}) => (
   <CmtList name={item.commentPerson} content={item.comment} />
 );
 
 const CommentScreen = ({route}) => {
   const {id, pd} = route.params;
-  const CommentData = pd[id - 1].comment;
+  let CommentData = pd[id - 1].comment;
   const CommentPersonData = pd[id - 1].commentPerson;
+  let [Data, setData] = useState('');
 
-  const Data = CommentData.map(function (value, index) {
+  Data = CommentData.map(function (value, index) {
+    idx = index;
     return {
       comment: value,
       commentPerson: CommentPersonData[index],
       id: index + '',
     };
   });
+
+  const updateComment = () => {
+    idx++;
+    Data.push({
+      comment: pd[id - 1].comment[idx],
+      commentPerson: CommentPersonData[idx],
+      id: idx + '',
+    });
+    setData(Data);
+  };
+
+  /*
+  const updateComment = () => {
+    Data = CommentData.map(function (value, index) {
+      return {
+        comment: value,
+        commentPerson: CommentPersonData[index],
+        id: index + '',
+      };
+    });
+    setData(Data);
+  };
+  */
 
   return (
     <View style={styles.container}>
@@ -48,14 +76,24 @@ const CommentScreen = ({route}) => {
         />
       </View>
       <KeyboardAwareScrollView style={styles.inputView}>
-        <Input />
+        <Input route={route} updateComment={() => updateComment()} />
       </KeyboardAwareScrollView>
     </View>
   );
 };
 
-const Input = () => {
+const Input = ({route, updateComment}) => {
   const [value, onChangeText] = React.useState('');
+  const {id, pd} = route.params;
+
+  //console.log(updateComment);
+
+  const clickPosts = () => {
+    pd[id - 1].comment.push(value);
+    pd[id - 1].commentPerson.push('Anonymous');
+    updateComment();
+    onChangeText('');
+  };
 
   return (
     <>
@@ -69,8 +107,13 @@ const Input = () => {
             placeholder={'댓글 달기...'}
             placeholderTextColor="grey"
           />
-          <TouchableOpacity style={styles.submitBtn}>
-            <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
+          <TouchableOpacity
+            style={styles.submitBtn}
+            onPress={() => {
+              clickPosts();
+              //updataData();
+            }}>
+            <Text style={{color: 'skyblue', fontSize: hp('2.5%')}}>게시</Text>
           </TouchableOpacity>
         </View>
       </View>

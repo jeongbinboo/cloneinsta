@@ -62,7 +62,7 @@ class PostList extends React.Component {
   };
 
   render() {
-    const {picId} = this.props.route.params;
+    const {picId, TabNavigation} = this.props.route.params;
     console.log(this.props.route.params.picId);
     return (
       <>
@@ -87,7 +87,13 @@ class PostList extends React.Component {
           style={{backgroundColor: 'white'}}
           data={PostData}
           renderItem={({item}) => {
-            return <ClickedPic item={item} PostData={PostData} />;
+            return (
+              <ClickedPic
+                item={item}
+                PostData={PostData}
+                TabNavigation={TabNavigation}
+              />
+            );
           }}
         />
       </>

@@ -17,7 +17,7 @@ const PictureList = ({navigation, toIndex, TabNavigation}) => (
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          navigation.push('PostList', {picId: 1});
+          navigation.push('PostList', {picId: 1, TabNavigation: TabNavigation});
         }}>
         <View>
           <Image

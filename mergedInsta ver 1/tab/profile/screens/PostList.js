@@ -12,6 +12,8 @@ import ClickedPic from '../components/ClickedPic';
 
 let PostNum = 2;
 
+//warning prams랑 Tabnav
+
 const PostData = [
   {
     id: '1',

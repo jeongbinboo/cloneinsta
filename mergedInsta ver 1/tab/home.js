@@ -8,6 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //import CommentScreen from '../../components/CommentScreen';
 import Profile from './profile/Profile';
 import HomeStack from './home/navigation/HomeStack';
+import Magnifier from './magnifier/magnifier';
 
 const ShoppingScreen = () => {
   return (
@@ -20,13 +21,6 @@ const UploadScreen = () => {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Upload!</Text>
-    </View>
-  );
-};
-const FindScreen = () => {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Find screen</Text>
     </View>
   );
 };
@@ -59,8 +53,8 @@ const Home = () => {
         {({navigation}) => <HomeStack TabNavigation={navigation} />}
       </Tab.Screen>
       <Tab.Screen
-        name="Find"
-        component={FindScreen}
+        name="Magnifier"
+        component={Magnifier}
         options={{
           tabBarIcon: ({focused}) => {
             let iconName = '';
@@ -71,6 +65,7 @@ const Home = () => {
           },
         }}
       />
+      {({navigation}) => <Magnifier TabNavigation={navigation} />}
       <Tab.Screen
         name="Upload"
         component={UploadScreen}

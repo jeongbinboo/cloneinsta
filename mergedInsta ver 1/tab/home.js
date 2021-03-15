@@ -67,6 +67,19 @@ const Home = () => {
       />
       {({navigation}) => <Magnifier TabNavigation={navigation} />}
       <Tab.Screen
+        name="Shopping"
+        component={ShoppingScreen}
+        options={{
+          tabBarIcon: ({focused}) => {
+            let iconName = '';
+            iconName = 'ios-logo-instagram';
+            return (
+              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
         name="Upload"
         component={UploadScreen}
         options={{
@@ -75,19 +88,6 @@ const Home = () => {
             iconName = focused
               ? 'ios-add-circle-sharp'
               : 'ios-add-circle-outline';
-            return (
-              <Ionicons name={iconName} size={30} style={{color: 'black'}} />
-            );
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Shopping"
-        component={ShoppingScreen}
-        options={{
-          tabBarIcon: ({focused}) => {
-            let iconName = '';
-            iconName = focused ? 'ios-basket' : 'ios-basket-outline';
             return (
               <Ionicons name={iconName} size={30} style={{color: 'black'}} />
             );

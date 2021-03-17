@@ -13,6 +13,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import axios from 'axios';
 
 let COMMENT_DATA = [
   //댓글 목록
@@ -23,16 +24,65 @@ let COMMENT_DATA = [
   },
 ];
 
-const renderItem = ({item}, func) => (
-  <CmtList name={item.name} content={item.content} func={func} />
+const renderItem = ({item}, func1) => (
+  <CmtList name={item.name} content={item.content} func1={func1} />
 );
 
 const CommentScreen = ({TabNavigation}) => {
   //TabNavigation.setOptions({tabBarVisible: false});
   const [value, onChangeText] = React.useState('');
-  const [id, setId] = React.useState(1);
+  const [DATA, setDATA] = React.useState([]);
   const flatListRef = React.useRef();
   const myRef = React.useRef();
+  const getComments = () => {
+    axios
+      .get('http://34.64.201.219:8080/api/v1/comments/2?page=1', {
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
+        },
+      })
+      .then((response) => {
+        //진짜 개구리다.. 주륵..
+        response.data.data.map((ele) => {
+          COMMENT_DATA = COMMENT_DATA.concat({
+            id: toString(ele.id),
+            name: ele.writer,
+            content: ele.content,
+          });
+        });
+        setDATA(COMMENT_DATA);
+        onChangeText('');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const postComments = () => {
+    //아직 댓글을 추가 해야만 댓글 나옴.
+    if (value === '') {
+      alert('내용을 입력하세요.');
+      return;
+    }
+    axios
+      .post(
+        'http://34.64.201.219:8080/api/v1/comments/2',
+        {content: value},
+        {
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
+          },
+        },
+      )
+      .then((response) => {
+        console.log(response.data);
+        getComments();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const scrollScreen = () => {
     flatListRef.current.scrollToOffset({animated: true, offset: 0});
   };
@@ -40,13 +90,11 @@ const CommentScreen = ({TabNavigation}) => {
     myRef.current.focus();
   };
   const addCmt = () => {
-    const newCmt = COMMENT_DATA.concat({
-      id: id,
+    COMMENT_DATA = COMMENT_DATA.concat({
+      id: 3,
       name: 'anonymous',
       content: value,
     });
-    COMMENT_DATA = newCmt;
-    setId(id + 1);
     onChangeText('');
   };
   return (
@@ -54,7 +102,7 @@ const CommentScreen = ({TabNavigation}) => {
       <View style={styles.container}>
         <FlatList
           ref={flatListRef}
-          data={COMMENT_DATA}
+          data={DATA}
           renderItem={({item}) => {
             return renderItem({item}, focusInput);
           }}
@@ -74,7 +122,7 @@ const CommentScreen = ({TabNavigation}) => {
               placeholderTextColor="grey"
               onFocus={scrollScreen}
             />
-            <TouchableOpacity style={styles.submitBtn} onPress={addCmt}>
+            <TouchableOpacity onPress={() => postComments()}>
               <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
             </TouchableOpacity>
           </View>
@@ -215,7 +263,7 @@ const styles = StyleSheet.create({
   },
   submitBtn: {
     width: wp('10%'),
-    color: 'transparent',
+    color: 'red',
     alignItems: 'center',
   },
   textInput: {

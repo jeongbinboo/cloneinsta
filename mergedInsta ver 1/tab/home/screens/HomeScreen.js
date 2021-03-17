@@ -16,8 +16,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import axios from 'axios';
 
-const CONTENT_DATA = [
+let CONTENT_DATA = [
   //업로드 글 항목
   {
     id: '1',
@@ -61,6 +62,7 @@ class HomeScreen extends Component {
     super(props);
     this.state = {isModal: false};
   }
+
   toggleModal() {
     this.setState({
       isModal: !this.state.isModal,
@@ -164,24 +166,29 @@ const LikesId = () => {
   );
 };
 
-const Comment = (props) => {
-  return (
-    <View style={styles.cmt}>
-      <TouchableOpacity>
-        <Text
-          style={{
-            color: 'black',
-            fontWeight: 'bold',
-            fontSize: hp('2.4%'),
-            marginRight: '3%',
-          }}>
-          {props.name}
-        </Text>
-      </TouchableOpacity>
-      <Text style={{color: 'black'}}>{props.text}</Text>
-    </View>
-  );
-};
+class Comment extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <View style={styles.cmt}>
+        <TouchableOpacity>
+          <Text
+            style={{
+              color: 'black',
+              fontWeight: 'bold',
+              fontSize: hp('2.2%'),
+              marginRight: '3%',
+            }}>
+            {this.props.name}
+          </Text>
+        </TouchableOpacity>
+        <Text style={{color: 'black'}}>{this.props.content}</Text>
+      </View>
+    );
+  }
+}
 
 const Input = () => {
   return (
@@ -256,8 +263,8 @@ class Content extends HomeScreen {
         </View>
         <LikesId />
         <View style={styles.cmtView}>
-          <Comment name="daaaayey" text="배고프다" />
-          <Comment name="miseongk_" text="나두나두~" />
+          <Comment name="sleepy" content="졸려" />
+          <Comment name="hungry" content="배고파" />
           <Input />
         </View>
       </View>

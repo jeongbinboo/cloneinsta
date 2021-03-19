@@ -14,123 +14,148 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
-
-let COMMENT_DATA = [
-  //댓글 목록
-  {
-    id: '0',
-    name: 'yeri__k',
-    content: '첫번째 댓글',
-  },
-];
+import {Component} from 'react';
+import {Keyboard} from 'react-native';
 
 const renderItem = ({item}, func1) => (
-  <CmtList name={item.name} content={item.content} func1={func1} />
+  <CmtList
+    name={item.writer}
+    content={item.content}
+    time={item.created_at}
+    func1={func1}
+  />
 );
 
-const CommentScreen = ({TabNavigation}) => {
-  //TabNavigation.setOptions({tabBarVisible: false});
-  const [value, onChangeText] = React.useState('');
-  const [DATA, setDATA] = React.useState([]);
-  const flatListRef = React.useRef();
-  const myRef = React.useRef();
-  const getComments = () => {
+export default class CommentScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: '',
+      DATA: [],
+      page: 1,
+    };
+    this.flatListRef = React.createRef();
+    this.myRef = React.createRef();
+    this.focusInput = this.focusInput.bind(this);
+    this.scrollScreen = this.scrollScreen.bind(this);
+    this.loadMore = this.loadMore.bind(this);
+    this.setTime = this.setTime.bind(this);
+    //this.props.TabNavigation.setOptions({tabBarVisible: false});
+  }
+  componentDidMount() {
+    //CommentScreen 들어왔을때 딱 한번만 실행
+    this.getComments();
+  }
+  setTime(time) {
+    //계산하기 귀찮아서 일단 이렇게만 해둠.
+    const today = new Date();
+    const postedTime = new Date(time);
+    const postedHour = postedTime.getHours();
+    const now = today.getHours();
+    const TIME = now - postedHour;
+    if (TIME < 0) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+  getComments() {
     axios
-      .get('http://34.64.201.219:8080/api/v1/comments/2?page=1', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
+      .get(
+        `http://34.64.201.219:8080/api/v1/comments/2?page=${this.state.page}`,
+        {
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE2MTIzNTc1LCJleHAiOjE2MTYxNjY3NzV9.C8ImSasuC6B4U1jDuKRA89udL1uMUvEqrxGOttNYDxA',
+          },
         },
-      })
+      )
       .then((response) => {
-        //진짜 개구리다.. 주륵..
         response.data.data.map((ele) => {
-          COMMENT_DATA = COMMENT_DATA.concat({
-            id: toString(ele.id),
-            name: ele.writer,
-            content: ele.content,
-          });
+          ele.created_at = this.setTime(ele.created_at);
         });
-        setDATA(COMMENT_DATA);
-        onChangeText('');
+        this.setState({
+          DATA: this.state.DATA.concat(response.data.data),
+          value: '',
+          page: this.state.page + 1,
+        });
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-  const postComments = () => {
+  }
+  postComments() {
+    Keyboard.dismiss();
     //아직 댓글을 추가 해야만 댓글 나옴.
-    if (value === '') {
+    if (this.state.value === '') {
       alert('내용을 입력하세요.');
       return;
     }
     axios
       .post(
         'http://34.64.201.219:8080/api/v1/comments/2',
-        {content: value},
+        {content: this.state.value},
         {
           headers: {
             Authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE2MTIzNTc1LCJleHAiOjE2MTYxNjY3NzV9.C8ImSasuC6B4U1jDuKRA89udL1uMUvEqrxGOttNYDxA',
           },
         },
       )
       .then((response) => {
-        console.log(response.data);
-        getComments();
+        //console.log(response.data);
+        this.getComments();
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-  const scrollScreen = () => {
-    flatListRef.current.scrollToOffset({animated: true, offset: 0});
-  };
-  const focusInput = () => {
-    myRef.current.focus();
-  };
-  const addCmt = () => {
-    COMMENT_DATA = COMMENT_DATA.concat({
-      id: 3,
-      name: 'anonymous',
-      content: value,
-    });
-    onChangeText('');
-  };
-  return (
-    <View style={{flex: 1}}>
-      <View style={styles.container}>
-        <FlatList
-          ref={flatListRef}
-          data={DATA}
-          renderItem={({item}) => {
-            return renderItem({item}, focusInput);
-          }}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
-      <View style={styles.inputView}>
-        <View style={styles.inputTextView}>
-          <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
-          <View style={styles.submitView}>
-            <TextInput
-              ref={myRef}
-              style={styles.textInput}
-              onChangeText={(text) => onChangeText(text)}
-              value={value}
-              placeholder={'댓글 달기...'}
-              placeholderTextColor="grey"
-              onFocus={scrollScreen}
-            />
-            <TouchableOpacity onPress={() => postComments()}>
-              <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
-            </TouchableOpacity>
+  }
+  scrollScreen() {
+    this.flatListRef.current.scrollToOffset({animated: true, offset: 0});
+  }
+  focusInput() {
+    this.myRef.current.focus();
+  }
+  loadMore() {
+    this.getComments();
+  }
+  render() {
+    return (
+      <View style={{flex: 1}}>
+        <View style={styles.container}>
+          <FlatList
+            ref={this.flatListRef}
+            data={this.state.DATA}
+            renderItem={({item}) => {
+              return renderItem({item}, this.focusInput);
+            }}
+            keyExtractor={(item) => item.id}
+            onEndReached={this.loadMore}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <View style={styles.inputTextView}>
+            <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
+            <View style={styles.submitView}>
+              <TextInput
+                ref={this.myRef}
+                style={styles.textInput}
+                onChangeText={(value) => this.setState({value})}
+                value={this.state.value}
+                placeholder={'댓글 달기...'}
+                placeholderTextColor="grey"
+                onFocus={this.scrollScreen}
+              />
+              <TouchableOpacity onPress={() => this.postComments()}>
+                <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 const CmtList = (props) => {
   return (
@@ -159,9 +184,9 @@ const CmtList = (props) => {
               marginRight: wp('8%'),
               fontSize: hp('1.8%'),
             }}>
-            1시간
+            {props.time}시간 전
           </Text>
-          <TouchableOpacity onPress={props.func}>
+          <TouchableOpacity onPress={props.func1}>
             <Text
               style={{
                 fontWeight: 'bold',
@@ -272,5 +297,3 @@ const styles = StyleSheet.create({
     marginLeft: wp('1%'),
   },
 });
-
-export default CommentScreen;

@@ -16,7 +16,7 @@ let PostNum = 2;
 
 const PostData = [
   {
-    id: '1',
+    id: 6,
     image: require('../images/pic7.jpg'),
     likeNum: '48명',
     writing: '졸업하고 싶다!',
@@ -26,7 +26,7 @@ const PostData = [
     timeStamp: '2021년 2월 22일',
   },
   {
-    id: '2',
+    id: 7,
     image: require('../images/pic1.jpg'),
     likeNum: '48명',
     writing: '눈이 이렇게나 많이 왔다~',

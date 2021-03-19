@@ -10,13 +10,31 @@ import {
   Image,
 } from 'react-native';
 
-export default class Login extends Component {
+import {connect} from 'react-redux';
+import {initToken} from '../../redux/action';
+import {initId} from '../../redux/action';
+import {initName} from '../../redux/action';
+
+class Login extends Component {
   state = {
     text: '',
     id: '',
     passwd: '',
     token: '',
   };
+
+  initToken = (tok) => {
+    this.props.dispatchInitToken(tok);
+  };
+
+  initId = (uid) => {
+    this.props.dispatchInitUserId(uid);
+  };
+
+  initName = (name) => {
+    this.props.dispatchInitName(name);
+  };
+
   gotohome = () => {
     this.props.navigation.navigate('Home');
   };
@@ -31,7 +49,20 @@ export default class Login extends Component {
           alert('input ID or Password!');
         else {
           const tok = response.data.token;
+          const userId = response.data.data[0].user_id;
+          const userName = response.data.data[0].name;
           this.setState({token: tok});
+
+          this.initToken(tok);
+          this.initId(userId);
+          this.initName(userName);
+          console.log(userId);
+          console.log(userName);
+          console.log(tok);
+          console.log(this.props.user_id);
+          console.log(this.props.name);
+          console.log(this.props.token);
+
           this.gotohome();
         }
       })
@@ -171,3 +202,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 });
+
+const mapDispatchToProps = {
+  dispatchInitToken: (token) => initToken(token),
+  dispatchInitUserId: (user_id) => initId(user_id),
+  dispatchInitName: (name) => initName(name),
+};
+
+const mapStateToProps = (state) => ({
+  token: state.userReducer.token,
+  user_id: state.userReducer.user_id,
+  name: state.userReducer.name,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -18,6 +18,8 @@ import TagPicList from '../components/TagPicList';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import {connect} from 'react-redux';
+
 class ProfileHome extends React.Component {
   constructor(props) {
     super(props);
@@ -46,7 +48,7 @@ class ProfileHome extends React.Component {
         <View>
           <ProfileAndFollow navigation={this.props.navigation} />
 
-          <Name />
+          <Name name={this.props.name} />
 
           <ProfileEditBtn navigation={this.props.navigation} />
 
@@ -113,9 +115,9 @@ const ProfileAndFollow = ({navigation}) => (
   </View>
 );
 
-const Name = () => (
+const Name = ({name}) => (
   <View>
-    <Text style={styles.nameText}>변영화</Text>
+    <Text style={styles.nameText}>{name}</Text>
   </View>
 );
 
@@ -210,4 +212,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileHome;
+const mapStateToProps = (state) => ({
+  name: state.userReducer.name,
+});
+
+export default connect(mapStateToProps)(ProfileHome);

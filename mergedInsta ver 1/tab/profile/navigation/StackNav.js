@@ -21,14 +21,19 @@ import CommentScreen from '../screens/CommentScreen';
 //modals
 import MakeContent from '../modals/MakeContent';
 
+//redux
+import {connect} from 'react-redux'; //필수
+
+//userId 안댐..왜..
 class StackNav extends React.Component {
+  state = {};
   render() {
     return (
       <Stack.Navigator>
         <Stack.Screen //ProfileHome.js
           name="Home"
           options={{
-            title: 'M0ovie',
+            title: `${this.props.name}`,
             headerRight: () => (
               <View style={styles.headerBtn}>
                 <TouchableOpacity
@@ -204,4 +209,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StackNav;
+const mapStateToProps = (state) => ({
+  userId: state.userReducer.userId,
+  name: state.userReducer.name,
+});
+
+export default connect(mapStateToProps)(StackNav);

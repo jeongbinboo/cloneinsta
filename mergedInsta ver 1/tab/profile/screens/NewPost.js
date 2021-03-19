@@ -9,54 +9,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
-
-//let token;
-
-/*
-axios
-  .get('http://34.64.201.219:8080/api/v1')
-  .then((Response) => {
-    console.log(Response.data);
-  })
-  .catch((Error) => {
-    console.log(Error);
-  });
-
-*/
-//이거 됨
-
-/*
-axios({
-  method: 'POST',
-  url: 'http://34.64.201.219:8080/api/v1/signin',
-  data: {
-    user_id: 'movie',
-    password: 'mooovie',
-  },
-})
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log('!!!!!!!!!!!!!ERROR!!!!!!!!!!!\n');
-    console.log(error);
-  });
-*/
-
-/*
-axios({
-  method: 'GET',
-  url: 'http://34.64.201.219:8080/api/v1/users',
-})
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log('!!!!!!!!!!!!!ERROR!!!!!!!!!!!\n');
-    console.log(error);
-  });
-
-  */
+import {connect} from 'react-redux';
 
 class NewPost extends React.Component {
   constructor(props) {
@@ -99,22 +52,24 @@ class NewPost extends React.Component {
       alert('fill content');
       return;
     }
+    console.log(this.props.token);
     axios
       .post(
         'http://34.64.201.219:8080/api/v1/posts',
         {content: ctt},
         {
           headers: {
+            //this.props.token,
             Authorization:
               'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
           },
         },
       )
-      .catch((error) => {
-        console.log(error);
-      })
       .then((response) => {
         console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -162,18 +117,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewPost;
+const mapStateToProps = (state) => ({
+  token: state.userReducer.token,
+});
 
-/*
-//POST signin
-{
-    "user_id": "4432",
-    "password": "4432"
-}
-
-//POST posts
-{
-    "title": "hi",
-    "content": "movie"
-}
-*/
+export default connect(mapStateToProps)(NewPost);

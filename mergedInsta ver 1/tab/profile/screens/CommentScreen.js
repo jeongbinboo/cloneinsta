@@ -16,6 +16,7 @@ import {
 import axios from 'axios';
 import {Component} from 'react';
 import {Keyboard} from 'react-native';
+import {connect} from 'react-redux';
 
 const renderItem = ({item}, func1) => (
   <CmtList
@@ -26,7 +27,7 @@ const renderItem = ({item}, func1) => (
   />
 );
 
-export default class CommentScreen extends Component {
+class CommentScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,13 +62,16 @@ export default class CommentScreen extends Component {
   }
   getComments() {
     const {id} = this.props.route.params;
+    //console.log(this.props.token);
     axios
       .get(
         `http://34.64.201.219:8080/api/v1/comments/${id}?page=${this.state.page}`,
         {
           headers: {
-            Authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE2MTIzNTc1LCJleHAiOjE2MTYxNjY3NzV9.C8ImSasuC6B4U1jDuKRA89udL1uMUvEqrxGOttNYDxA',
+            //this.props.token,
+
+            Authorization: this.props.token,
+            //'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE2MTIzNTc1LCJleHAiOjE2MTYxNjY3NzV9.C8ImSasuC6B4U1jDuKRA89udL1uMUvEqrxGOttNYDxA',
           },
         },
       )
@@ -79,6 +83,7 @@ export default class CommentScreen extends Component {
         });
       })
       .catch((error) => {
+        //console.log(this.props.token);
         console.log(error);
       });
   }
@@ -302,3 +307,9 @@ const styles = StyleSheet.create({
     marginLeft: wp('1%'),
   },
 });
+
+const mapStateToProps = (state) => ({
+  token: state.userReducer.token,
+});
+
+export default connect(mapStateToProps)(CommentScreen);

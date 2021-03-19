@@ -62,22 +62,27 @@ class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {isModal: false};
+    this.cmtRef = React.createRef();
+    this.scrollTo = this.scrollTo.bind(this);
   }
-
   toggleModal() {
     this.setState({
       isModal: !this.state.isModal,
     });
   }
-  renderItem({item}) {
+  renderItem({item}, func) {
     return (
       <Content
         name={item.name}
         src={item.src}
         modalHandler={() => this.toggleModal()}
         navigation={this.props.navigation}
+        func={func}
       />
     );
+  }
+  scrollTo() {
+    //  this.cmtRef.current.scrollToIndex({index: 1});
   }
   render() {
     return (
@@ -94,9 +99,10 @@ class HomeScreen extends Component {
           </ScrollView>
         </View>
         <FlatList
+          ref={this.cmtRef}
           data={CONTENT_DATA}
           renderItem={({item}) => {
-            return this.renderItem({item});
+            return this.renderItem({item}, this.scrollTo);
           }}
           keyExtractor={(item) => item.id}
         />

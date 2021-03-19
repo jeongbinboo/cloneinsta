@@ -16,13 +16,15 @@ import {
 import axios from 'axios';
 import {Component} from 'react';
 import {Keyboard} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 
-const renderItem = ({item}, func1) => (
+const renderItem = ({item, index}, func1) => (
   <CmtList
     name={item.writer}
     content={item.content}
     time={item.created_at}
     func1={func1}
+    index={index}
   />
 );
 
@@ -33,6 +35,7 @@ export default class CommentScreen extends Component {
       value: '',
       DATA: [],
       page: 1,
+      isLoading: true,
     };
     this.flatListRef = React.createRef();
     this.myRef = React.createRef();
@@ -78,9 +81,11 @@ export default class CommentScreen extends Component {
           DATA: this.state.DATA.concat(response.data.data),
           value: '',
           page: this.state.page + 1,
+          isLoading: false,
         });
       })
       .catch((error) => {
+        this.setState({isLoading: false});
         console.log(error);
       });
   }
@@ -103,21 +108,29 @@ export default class CommentScreen extends Component {
         },
       )
       .then((response) => {
-        //console.log(response.data);
         this.getComments();
+        console.log(response.data);
+        console.log('---------------');
+        console.log(this.state.DATA);
       })
       .catch((error) => {
         console.log(error);
       });
   }
   scrollScreen() {
-    this.flatListRef.current.scrollToOffset({animated: true, offset: 0});
+    //this.flatListRef.current.scrollToOffset({animated: true, offset: 1});
   }
-  focusInput() {
+  focusInput(index) {
     this.myRef.current.focus();
+    if (index >= 3) index = index - 3;
+    this.flatListRef.current.scrollToIndex({index: index}); //flatlist index 넣으면 됨
   }
   loadMore() {
-    this.getComments();
+    if (this.state.isLoading) {
+      return;
+    } else {
+      this.getComments();
+    }
   }
   render() {
     return (
@@ -126,11 +139,17 @@ export default class CommentScreen extends Component {
           <FlatList
             ref={this.flatListRef}
             data={this.state.DATA}
-            renderItem={({item}) => {
-              return renderItem({item}, this.focusInput);
+            renderItem={({item, index}) => {
+              return renderItem({item, index}, this.focusInput);
             }}
             keyExtractor={(item) => item.id}
             onEndReached={this.loadMore}
+            onEndReachedThreshold={0.6}
+            ListFooterComponent={
+              this.state.isLoading && (
+                <ActivityIndicator size="large" color="black" />
+              )
+            }
           />
         </View>
         <View style={styles.inputView}>
@@ -144,7 +163,7 @@ export default class CommentScreen extends Component {
                 value={this.state.value}
                 placeholder={'댓글 달기...'}
                 placeholderTextColor="grey"
-                onFocus={this.scrollScreen}
+                //onFocus={this.scrollScreen}
               />
               <TouchableOpacity onPress={() => this.postComments()}>
                 <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
@@ -157,51 +176,57 @@ export default class CommentScreen extends Component {
   }
 }
 
-const CmtList = (props) => {
-  return (
-    <View style={styles.cmtView}>
-      <View style={{marginRight: wp('1%')}}>
-        <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
-      </View>
-      <View style={styles.cmt}>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                marginRight: wp('2%'),
-                fontSize: hp('2.3%'),
-              }}>
-              {props.name}
-            </Text>
-          </TouchableOpacity>
-          <Text style={{fontSize: hp('2.3%')}}>{props.content}</Text>
+class CmtList extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <View style={styles.cmtView}>
+        <View style={{marginRight: wp('1%')}}>
+          <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
         </View>
-        <View style={styles.cmtExtraView}>
-          <Text
-            style={{
-              color: 'grey',
-              marginRight: wp('8%'),
-              fontSize: hp('1.8%'),
-            }}>
-            {props.time}시간 전
-          </Text>
-          <TouchableOpacity onPress={props.func1}>
+        <View style={styles.cmt}>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  marginRight: wp('2%'),
+                  fontSize: hp('2.3%'),
+                }}>
+                {this.props.name}
+              </Text>
+            </TouchableOpacity>
+            <Text style={{fontSize: hp('2.3%')}}>{this.props.content}</Text>
+          </View>
+          <View style={styles.cmtExtraView}>
             <Text
               style={{
-                fontWeight: 'bold',
                 color: 'grey',
+                marginRight: wp('8%'),
                 fontSize: hp('1.8%'),
               }}>
-              답글 달기
+              {this.props.time}시간 전
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.func1(this.props.index)}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'grey',
+                  fontSize: hp('1.8%'),
+                }}>
+                답글 달기
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
+        <CmtLikes />
       </View>
-      <CmtLikes />
-    </View>
-  );
-};
+    );
+  }
+}
 
 const CmtLikes = () => {
   const [isLikes, setIsLikes] = React.useState(true);

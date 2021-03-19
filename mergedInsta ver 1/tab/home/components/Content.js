@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useRef, useState} from 'react';
 import {
   Text,
   View,
@@ -99,7 +99,7 @@ class Comment extends Component {
   }
 }
 
-const Input = () => {
+const Input = (props) => {
   return (
     <View style={styles.cmtInput}>
       <Ionicons
@@ -112,6 +112,7 @@ const Input = () => {
         }}
       />
       <TextInput
+        onFocus={props.func}
         multiline
         placeholder={'댓글 달기..'}
         placeholderTextColor="grey"
@@ -174,7 +175,7 @@ class Content extends Component {
         <View style={styles.cmtView}>
           <Comment name="sleepy" content="졸려" />
           <Comment name="hungry" content="배고파" />
-          <Input />
+          <Input func={this.props.func} />
         </View>
       </View>
     );

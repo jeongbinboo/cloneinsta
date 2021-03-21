@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, {Component} from 'react';
 import {
   StyleSheet,
@@ -10,10 +9,13 @@ import {
   Image,
 } from 'react-native';
 
+//redux
 import {connect} from 'react-redux';
-import {initToken} from '../../redux/action';
-import {initId} from '../../redux/action';
-import {initName} from '../../redux/action';
+import {init_user} from '../../redux/action';
+
+//axios
+import axios from 'axios';
+axios.defaults.baseURL = 'http://34.64.201.219:8080/api/v1/';
 
 class Login extends Component {
   state = {
@@ -23,16 +25,8 @@ class Login extends Component {
     token: '',
   };
 
-  initToken = (tok) => {
-    this.props.dispatchInitToken(tok);
-  };
-
-  initId = (uid) => {
-    this.props.dispatchInitUserId(uid);
-  };
-
-  initName = (name) => {
-    this.props.dispatchInitName(name);
+  init_user = (token, user_id, name) => {
+    this.props.dispatchInitUser(token, user_id, name);
   };
 
   gotohome = () => {
@@ -40,7 +34,7 @@ class Login extends Component {
   };
   signin = (id, passwd) => {
     axios
-      .post('http://34.64.201.219:8080/api/v1/signin', {
+      .post(`${axios.defaults.baseURL}signin`, {
         user_id: id,
         password: passwd,
       })
@@ -52,21 +46,14 @@ class Login extends Component {
           const userId = response.data.data[0].user_id;
           const userName = response.data.data[0].name;
           this.setState({token: tok});
-
-          this.initToken(tok);
-          this.initId(userId);
-          this.initName(userName);
-          console.log(userId);
-          console.log(userName);
-          console.log(tok);
-          console.log(this.props.user_id);
-          console.log(this.props.name);
-          console.log(this.props.token);
+          axios.defaults.headers.common['Authorization'] = tok;
+          this.init_user(tok, userId, userName);
 
           this.gotohome();
         }
       })
       .catch((error) => {
+        console.log(error);
         alert('wrong');
       });
   };
@@ -203,16 +190,17 @@ const styles = StyleSheet.create({
   },
 });
 
+//redux code
 const mapDispatchToProps = {
-  dispatchInitToken: (token) => initToken(token),
-  dispatchInitUserId: (user_id) => initId(user_id),
-  dispatchInitName: (name) => initName(name),
+  dispatchInitUser: (token, user_id, name) => init_user(token, user_id, name),
 };
 
-const mapStateToProps = (state) => ({
-  token: state.userReducer.token,
-  user_id: state.userReducer.user_id,
-  name: state.userReducer.name,
-});
+const mapStateToProps = (state) => {
+  return {
+    token: state.userReducer.token,
+    user_id: state.userReducer.user_id,
+    name: state.userReducer.name,
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

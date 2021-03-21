@@ -41,6 +41,7 @@ export default class SignUp extends Component {
       })
       .catch((error) => {
         alert('wrong!');
+        console.log(error);
         this.gotologin();
       });
   };

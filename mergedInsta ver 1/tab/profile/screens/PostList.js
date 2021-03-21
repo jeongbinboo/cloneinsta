@@ -11,12 +11,13 @@ import {
 import ClickedPic from '../components/ClickedPic';
 
 let PostNum = 2;
+import axios from 'axios';
 
 //warning prams랑 Tabnav
 
 const PostData = [
   {
-    id: 6,
+    id: 0,
     image: require('../images/pic7.jpg'),
     likeNum: '48명',
     writing: '졸업하고 싶다!',
@@ -26,7 +27,7 @@ const PostData = [
     timeStamp: '2021년 2월 22일',
   },
   {
-    id: 7,
+    id: 1,
     image: require('../images/pic1.jpg'),
     likeNum: '48명',
     writing: '눈이 이렇게나 많이 왔다~',
@@ -65,7 +66,8 @@ class PostList extends React.Component {
 
   render() {
     const {picId, TabNavigation} = this.props.route.params;
-    console.log(this.props.route.params.picId);
+    //console.log(this.props.route.params.picId);
+
     return (
       <>
         {/* <Button

@@ -18,14 +18,23 @@ import TagPicList from '../components/TagPicList';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+//redux
 import {connect} from 'react-redux';
+
+//axios
+import axios from 'axios';
 
 class ProfileHome extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       switchPicListFlag: 1,
+      bio: '',
     };
+  }
+
+  componentDidMount() {
+    this.getProfile();
   }
 
   mineToTag() {
@@ -42,13 +51,35 @@ class ProfileHome extends React.Component {
     console.log('tagToMine');
   }
 
+  getProfile = async () => {
+    axios
+      .get(`${axios.defaults.baseURL}users/movie`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+        params: {
+          user_id: 'movie',
+        },
+      })
+      .then((response) => {
+        this.setState({
+          bio: response.data.data[0].bio,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   render() {
+    //console.log(axios.defaults.headers.common['Authorization']);
     return (
       <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
         <View>
           <ProfileAndFollow navigation={this.props.navigation} />
 
           <Name name={this.props.name} />
+          <Text style={{marginLeft: 10}}>{this.state.bio}</Text>
 
           <ProfileEditBtn navigation={this.props.navigation} />
 

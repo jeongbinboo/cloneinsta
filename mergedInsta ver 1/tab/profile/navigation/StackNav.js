@@ -28,12 +28,13 @@ import {connect} from 'react-redux'; //필수
 class StackNav extends React.Component {
   state = {};
   render() {
+    //mapStateToProps();
     return (
       <Stack.Navigator>
         <Stack.Screen //ProfileHome.js
           name="Home"
           options={{
-            title: `${this.props.name}`,
+            title: `${this.props.user_id}`,
             headerRight: () => (
               <View style={styles.headerBtn}>
                 <TouchableOpacity
@@ -209,9 +210,11 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapDispatchToProps = {};
+
 const mapStateToProps = (state) => ({
-  userId: state.userReducer.userId,
+  user_id: state.userReducer.user_id,
   name: state.userReducer.name,
 });
 
-export default connect(mapStateToProps)(StackNav);
+export default connect(mapStateToProps, mapDispatchToProps)(StackNav);

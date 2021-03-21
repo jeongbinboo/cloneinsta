@@ -6,10 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 
 import axios from 'axios';
 import {connect} from 'react-redux';
+//import movie_pic1 from '../images/movie_pic1.PNG';
+
+let plz;
 
 class NewPost extends React.Component {
   constructor(props) {
@@ -17,33 +21,35 @@ class NewPost extends React.Component {
     this.state = {
       postList: 'gd',
       content: '',
+      pd: [],
     };
   }
 
   componentDidMount() {
     this.props.TabNavigation.setOptions({tabBarVisible: false});
-    //this.getPosts();
+    this.getPosts();
   }
 
   createPost = (content) => {};
 
-  getPosts = () => {
-    //다예가 수정 하고 쓸 것
+  getPosts = async () => {
     axios
-      .get('http://34.64.201.219:8080/api/v1/posts', {
+      .get(`${axios.defaults.baseURL}posts/movie`, {
         headers: {
-          Authorization:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
+          Authorization: axios.defaults.headers.common['Authorization'],
         },
-        body: {
-          target_user: 'test',
+        params: {
+          user_id: 'movie',
         },
+      })
+      .then((response) => {
+        this.setState({
+          pd: response.data.data[0],
+        });
       })
       .catch((error) => {
         console.log(error);
-      })
-      .then((response) => {
-        console.log(response.data);
+        //console.log(this.props.user_id);
       });
   };
 
@@ -52,16 +58,41 @@ class NewPost extends React.Component {
       alert('fill content');
       return;
     }
-    console.log(this.props.token);
+
+    // const fd = new FormData();
+    // fd.append('image', {
+    //   uri: 'D:mergedInsta\tabprofileimagesmovie_pic1.PNG',
+    //   type: 'image/jpeg',
+    //   name: 'movie_pic1.PNG',
+    // });
+    /*
     axios
       .post(
-        'http://34.64.201.219:8080/api/v1/posts',
-        {content: ctt},
+        `${axios.defaults.baseURL}/files`,
+        {files: 'D:mergedInsta\tabprofileimagesmovie_pic1.PNG'},
         {
           headers: {
-            //this.props.token,
-            Authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE1OTc5MjU2LCJleHAiOjE2MTYwMjI0NTZ9.PMipEJkxGrSNpFF6sizN7ECCC1qhCjQrxLkDSaPGDs4',
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
+        },
+      )
+      .then((response) => {
+        console.log(response);
+        pictureUrl = response.data.data[0];
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log('pic upload error');
+      });
+      */
+
+    axios
+      .post(
+        `${axios.defaults.baseURL}posts`,
+        {content: ctt, image: ['1616328173560_movie_pic1.PNG']},
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
           },
         },
       )
@@ -70,12 +101,11 @@ class NewPost extends React.Component {
       })
       .catch((error) => {
         console.log(error);
+        console.log('post error');
       });
   };
 
   render() {
-    //this.props.TabNavigation.setOptions({tabBarVisible: false});
-
     return (
       <View style={styles.container}>
         <View style={{alignItems: 'center'}}>
@@ -98,9 +128,21 @@ class NewPost extends React.Component {
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>입력</Text>
           </TouchableOpacity>
         </View>
-        <View style={{marginTop: 20, alignItems: 'center', borderWidth: 1}}>
+        <View style={{marginTop: 20, alignItems: 'center'}}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>content List</Text>
-          <ScrollView>{/*(val) => <Text>{val.token}</Text>*/}</ScrollView>
+          <ScrollView>
+            <View style={{borderWidth: 1, padding: 5, margin: 10}}>
+              <Text style={{color: 'black'}}>{this.state.pd.id}</Text>
+              <Text>{this.state.pd.content}</Text>
+              <Image
+                style={{height: 100, width: 100}}
+                source={{
+                  uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.pd.image}`,
+                }}
+              />
+              <Text>{this.props.user_id}</Text>
+            </View>
+          </ScrollView>
         </View>
       </View>
     );
@@ -119,6 +161,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   token: state.userReducer.token,
+  user_id: state.userReducer.user_id,
 });
 
 export default connect(mapStateToProps)(NewPost);

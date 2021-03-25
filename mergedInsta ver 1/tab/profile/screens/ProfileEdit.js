@@ -8,11 +8,35 @@ import {
   TextInput,
 } from 'react-native';
 
-const ProfileEdit = ({TabNavigation}) => {
+//redux
+import {connect} from 'react-redux';
+import {change_info} from '../../../redux/action';
+
+//axios
+import axios from 'axios';
+
+let changeUserId;
+let changeName;
+
+export const alr = () => {
+  //user_id, name
+  //this.props.dispatchChangeInfo(changeUserId, changeName);
+
+  mapDispatchToProps.dispatchChangeInfo(changeUserId, changeName);
+
+  mapDispatchToProps.dispatchChangeInfo(changeUserId, changeName);
+  mapDispatchToProps.hi();
+  //mapStateToProps();
+};
+
+const ProfileEdit = ({TabNavigation, name, user_id}) => {
   //TabNavigation.setOptions({tabBarVisible: false});
   useEffect(() => {
     TabNavigation.setOptions({tabBarVisible: false});
+    changeUserId = user_id;
+    changeName = name;
   });
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View>
@@ -29,19 +53,35 @@ const ProfileEdit = ({TabNavigation}) => {
       </View>
       {/* 프로필 사진 바꾸기 */}
 
+      {/* name */}
       <View style={{marginTop: '3%'}}>
         <View style={styles.changeInfoView}>
           <View style={{width: '40%'}}>
             <Text style={styles.categoryText}>이름</Text>
           </View>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => {
+              changeName = text;
+              //console.log(changeName);
+            }}>
+            {name}
+          </TextInput>
         </View>
 
+        {/* user_id */}
         <View style={styles.changeInfoView}>
           <View style={{width: '40%'}}>
             <Text style={styles.categoryText}>사용자 이름</Text>
           </View>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => {
+              changeUserId = text;
+              //console.log(changeName);
+            }}>
+            {user_id}
+          </TextInput>
         </View>
 
         <View style={styles.changeInfoView}>
@@ -108,4 +148,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileEdit;
+//export default ProfileEdit;
+
+//redux code
+
+const mapDispatchToProps = {
+  //dispatchInitUser: (token, user_id, name) => init_user(token, user_id, name),
+  dispatchChangeInfo: (user_id, name) => change_info(user_id, name),
+  hi: () => console.log('click ok'),
+};
+
+const mapStateToProps = (state) => {
+  return {
+    token: state.userReducer.token,
+    user_id: state.userReducer.user_id,
+    name: state.userReducer.name,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileEdit);

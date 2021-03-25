@@ -11,20 +11,20 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //screens
-import ProfileHome from '../screens/ProfileHome';
-import ProfileEdit from '../screens/ProfileEdit';
+//import ProfileHome from '../screens/ProfileHome';
+import ProfileEdit, {alr} from '../screens/ProfileEdit';
 import PostList from '../screens/PostList';
 import FollowList from '../screens/FollowList';
 import NewPost from '../screens/NewPost';
 import CommentScreen from '../screens/CommentScreen';
+import ProfileHome from '../screens/ProfileHome';
 
 //modals
 import MakeContent from '../modals/MakeContent';
 
 //redux
-import {connect} from 'react-redux'; //필수
+import {connect} from 'react-redux';
 
-//userId 안댐..왜..
 class StackNav extends React.Component {
   state = {};
   render() {
@@ -74,7 +74,15 @@ class StackNav extends React.Component {
             headerTitle: '프로필 편집',
             headerTitleAlign: 'center',
             headerRight: () => (
-              <TouchableOpacity style={{marginRight: 5}}>
+              <TouchableOpacity
+                style={{marginRight: 5}}
+                onPress={() => {
+                  alr();
+                  navigation.goBack();
+                  this.props.TabNavigation.setOptions({
+                    tabBarVisible: true,
+                  });
+                }}>
                 <Text style={{fontSize: 19, color: '#058FFD'}}>완료</Text>
               </TouchableOpacity>
             ),
@@ -107,7 +115,7 @@ class StackNav extends React.Component {
           name="FollowList"
           component={FollowList}
           options={{
-            headerTitle: 'm0ovie',
+            headerTitle: `${this.props.user_id}`,
             headerTitleAlign: 'center',
           }}
         />

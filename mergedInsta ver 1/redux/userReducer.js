@@ -2,7 +2,7 @@
 // import {INIT_TOKEN} from './action';
 // import {INIT_ID} from './action';
 // import {INIT_NAME} from './action';
-import {INIT_USER} from './action';
+import {CHANGE_INFO, INIT_USER} from './action';
 
 const initialState = {
   token: 'none',
@@ -16,6 +16,14 @@ const userReducer = (state = initialState, action) => {
       return {
         ...initialState,
         token: `${action.token}`,
+        user_id: `${action.user_id}`,
+        name: `${action.name}`,
+      };
+
+    case CHANGE_INFO:
+      //여기가 안와짐
+      return {
+        ...state,
         user_id: `${action.user_id}`,
         name: `${action.name}`,
       };

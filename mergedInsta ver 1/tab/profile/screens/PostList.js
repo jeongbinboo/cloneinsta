@@ -1,62 +1,48 @@
+//if click picture, this component is loaded
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-  Button,
-} from 'react-native';
+import {StyleSheet, FlatList} from 'react-native';
+
+//component
 import ClickedPic from '../components/ClickedPic';
 
-let PostNum = 2;
+//axios
 import axios from 'axios';
 
-//warning prams랑 Tabnav
-
-const PostData = [
-  {
-    id: 0,
-    image: require('../images/pic7.jpg'),
-    likeNum: '48명',
-    writing: '졸업하고 싶다!',
-    commmentNum: '3',
-    commentPerson: ['Jandi', 'James', 'daye'],
-    comment: ['고양이 좋아', '고양이 사랑해', '난 사실 강아지파'],
-    timeStamp: '2021년 2월 22일',
-  },
-  {
-    id: 1,
-    image: require('../images/pic1.jpg'),
-    likeNum: '48명',
-    writing: '눈이 이렇게나 많이 왔다~',
-    commmentNum: '2',
-    commentPerson: ['Jandi', 'James'],
-    comment: ['영화는 최고', '그거 맞아?'],
-    timeStamp: '2021년 1월 05일',
-  },
-];
+//redux
+import {connect} from 'react-redux';
 
 class PostList extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
+    this.state = {
+      postData: [],
+    };
   }
 
-  /*
-  handlePostFocus = () => {
-    const {scrollHeight, clientHeight} = this.myRef;
-    this.myRef.scrollTop = scrollHeight - clientHeight;
+  componentDidMount() {
+    this.getPosts();
+  }
+
+  getPosts = async () => {
+    axios
+      .get(`${axios.defaults.baseURL}posts/${this.props.user_id}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+        params: {
+          user_id: `${this.props.user_id}`,
+        },
+      })
+      .then((response) => {
+        this.setState({
+          postData: response.data.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-*/
-  /*
-  toIndex = () => {
-    this.myRef.scrollToIndex({
-      index: 1,
-    });
-  };
-*/
 
   toIndex = (idx) => {
     this.myRef.scrollToIndex({
@@ -66,39 +52,35 @@ class PostList extends React.Component {
 
   render() {
     const {picId, TabNavigation} = this.props.route.params;
-    //console.log(this.props.route.params.picId);
 
     return (
       <>
-        {/* <Button
-          title="밑으로"
-          //onPress={() => this.myRef.current.scrollToEnd({animated: false})}
-          //onPress={() => this.myRef.handlePostFocus()}
-          //onPress={() => this.myRef.current.scrollTo(10, 10)}
-          onPress={(idx) => this.toIndex(1)}
-        /> */}
         <FlatList
-          //ref={(ref) => (this.myRef = ref)}
-          initialScrollIndex={picId}
-          //onScrollToIndexFailed={0}
-          onScrollToIndexFailed={() => {
-            console.log('error');
+          ref={(ref) => (this.myRef = ref)}
+          initialScrollIndex={picId} //
+          onScrollToIndexFailed={(error) => {
+            this.myRef.scrollToOffset({
+              offset: error.averageItemLength * error.index,
+              animated: false,
+            });
+            setTimeout(() => {
+              this.myRef.scrollToIndex({
+                index: error.index,
+                animated: false,
+              });
+            }, 100);
           }}
-          onContentSizeChange={() => {
-            //this.myRef.current.scrollToEnd({animated: false}); //이거됨
-          }}
-          on
+          /*
+          onScrollToIndexFailed={(error) => {
+            console.log(error);
+            //this.toIndex(picId);
+          }}*/
           style={{backgroundColor: 'white'}}
-          data={PostData}
+          data={this.state.postData}
           renderItem={({item}) => {
-            return (
-              <ClickedPic
-                item={item}
-                PostData={PostData}
-                TabNavigation={TabNavigation}
-              />
-            );
+            return <ClickedPic item={item} TabNavigation={TabNavigation} />;
           }}
+          keyExtractor={(item, index) => index.toString()}
         />
       </>
     );
@@ -111,6 +93,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostList;
-export {PostData};
-export {PostNum};
+const mapStateToProps = (state) => ({
+  name: state.userReducer.name,
+  user_id: state.userReducer.user_id,
+});
+
+export default connect(mapStateToProps)(PostList);

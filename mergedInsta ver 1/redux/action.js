@@ -5,6 +5,7 @@
 // export const INIT_NAME = 'INIT_NAME';
 
 export const INIT_USER = 'INIT_USER';
+export const CHANGE_INFO = 'CHANGE_INFO';
 
 // export function initToken(token) {
 //   return {
@@ -22,6 +23,13 @@ export function init_user(token, user_id, name) {
   };
 }
 
+export function change_info(user_id, name) {
+  return {
+    type: CHANGE_INFO,
+    user_id: `${user_id}`,
+    name: `${name}`,
+  };
+}
 // export function initName(name) {
 //   return {
 //     type: INIT_NAME,

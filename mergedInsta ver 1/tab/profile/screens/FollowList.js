@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,11 +12,44 @@ import {
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 const TopTab = createMaterialTopTabNavigator();
 
+//axios
+import axios from 'axios';
+
+//redux
+import {connect} from 'react-redux';
+
 //component
 //import FollwerItem from '../components/FollowerItem';
 //error while updating
-const FollowList = ({route, navigation}) => {
+const FollowList = ({route, navigation, user_id}) => {
+  useEffect(() => {
+    getFollowers();
+  }, []);
+
   const {FollowFlag} = route.params;
+
+  const [FollowerList, setFollowerList] = useState([]);
+
+  const getFollowers = () => {
+    axios
+      .get(`${axios.defaults.baseURL}users/${user_id}/followers`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+        params: {
+          user_id: `${user_id}`,
+        },
+      })
+      .then((response) => {
+        setFollowerList(response.data.data);
+        //console.log(FollowerList);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //console.log(FollowerList);
   return (
     <TopTab.Navigator
       initialRouteName={FollowFlag === 1 ? '팔로워' : '팔로잉'}
@@ -31,8 +64,14 @@ const FollowList = ({route, navigation}) => {
         activeTintColor: '#000',
         inactiveTintColor: '#d1cece',
       }}>
-      <TopTab.Screen name="팔로워" component={Follower} />
-      <TopTab.Screen name="팔로잉" component={Following} />
+      {/* <TopTab.Screen name="팔로워">{() => <Follower />}</TopTab.Screen>
+      <TopTab.Screen name="팔로잉"> {() => <Following />}</TopTab.Screen> */}
+      {/* children={() => <AdminPage userData={this.props.userSettings} />} */}
+      <TopTab.Screen
+        name="팔로워"
+        children={() => <Follower FollowerList={FollowerList} />}
+      />
+      <TopTab.Screen name="팔로잉" children={() => <Following />} />
     </TopTab.Navigator>
   );
 };
@@ -78,12 +117,15 @@ const FollowingData = [
   },
 ];
 
-const FollowerItem = (item) => (
+const FollowerItem = ({item}) => (
   <View style={styles.FollowerItemView}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Image style={{height: 70, width: 70}} source={item.image} />
+      <Image
+        style={{height: 70, width: 70}}
+        source={require('../images/noProfile.png')}
+      />
       <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
-        {item.name}
+        {item.user_id}
       </Text>
     </View>
     <View>
@@ -97,7 +139,10 @@ const FollowerItem = (item) => (
 const FollowingItem = (item) => (
   <View style={styles.FollowerItemView}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Image style={{height: 70, width: 70}} source={item.image} />
+      <Image
+        style={{height: 70, width: 70}}
+        source={require('../images/noProfile.png')}
+      />
       <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
         {item.name}
       </Text>
@@ -110,23 +155,29 @@ const FollowingItem = (item) => (
   </View>
 );
 
-const Follower = () => (
-  <View style={{backgroundColor: 'white'}}>
-    <FlatList
-      data={FollowerData}
-      renderItem={({item}) => {
-        return FollowerItem(item);
-      }}
-      keyExtractor={(item) => item.id}
-    />
-  </View>
-);
+const Follower = ({FollowerList}) => {
+  return (
+    <View style={{backgroundColor: 'white'}}>
+      <FlatList
+        data={FollowerList}
+        renderItem={({item, index}) => {
+          //console.log(item);
+
+          //return FollowerItem(item);
+          return <FollowerItem item={item} />;
+        }}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </View>
+  );
+};
 
 const Following = () => (
   <View style={{backgroundColor: 'white'}}>
     <FlatList
       data={FollowingData}
       renderItem={({item}) => {
+        //return FollowingItem(item);
         return FollowingItem(item);
       }}
       keyExtractor={(item) => item.id}
@@ -154,4 +205,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FollowList;
+const mapStateToProps = (state) => ({
+  //name: state.userReducer.name,
+  user_id: state.userReducer.user_id,
+});
+
+export default connect(mapStateToProps)(FollowList);

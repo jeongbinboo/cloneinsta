@@ -1,4 +1,4 @@
-import React, {Component, useRef, useState} from 'react';
+import React, {PureComponent, useRef, useState} from 'react';
 import {
   Text,
   View,
@@ -17,6 +17,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //AXIOS
 import axios from 'axios';
+
+//REDUX
+import {connect} from 'react-redux';
 
 const ContentIcon = (props) => {
   const btnName = props.name;
@@ -75,7 +78,7 @@ const LikesId = () => {
   );
 };
 
-class Comment extends Component {
+class Comment extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -83,15 +86,7 @@ class Comment extends Component {
     return (
       <View style={styles.cmt}>
         <TouchableOpacity>
-          <Text
-            style={{
-              color: 'black',
-              fontWeight: 'bold',
-              fontSize: hp('2.2%'),
-              marginRight: '3%',
-            }}>
-            {this.props.name}
-          </Text>
+          <Text style={styles.cmtID}>{this.props.name}</Text>
         </TouchableOpacity>
         <Text style={{color: 'black'}}>{this.props.content}</Text>
       </View>
@@ -112,7 +107,7 @@ const Input = (props) => {
         }}
       />
       <TextInput
-        onFocus={props.func}
+        onFocus={() => props.func(props.index)}
         multiline
         placeholder={'댓글 달기..'}
         placeholderTextColor="grey"
@@ -121,7 +116,7 @@ const Input = (props) => {
   );
 };
 
-class Content extends Component {
+class Content extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -144,7 +139,7 @@ class Content extends Component {
                   fontWeight: 'bold',
                   fontSize: hp('2.7%'),
                 }}>
-                {this.props.name}
+                {this.props.item.writer}
               </Text>
             </TouchableOpacity>
           </View>
@@ -159,7 +154,12 @@ class Content extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Image style={styles.imgView} source={this.props.src} />
+        <Image
+          style={styles.imgView}
+          source={{
+            uri: `http://34.64.201.219:8080/api/v1/uploads/${this.props.item.image[0]}`,
+          }}
+        />
         <View style={styles.iconView}>
           <View style={styles.mainIcon}>
             <ContentIcon name="ios-heart-outline" />
@@ -173,9 +173,22 @@ class Content extends Component {
         </View>
         <LikesId />
         <View style={styles.cmtView}>
+          <View style={styles.postContent}>
+            <Text style={styles.cmtID}>{this.props.item.writer}</Text>
+            <Text>{this.props.item.content}</Text>
+          </View>
+          <View style={styles.moreCmt}>
+            <TouchableOpacity>
+              <Text
+                style={{color: 'grey'}}
+                onPress={() => this.props.navigation.navigate('CommentScreen')}>
+                댓글 더보기
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Comment name="sleepy" content="졸려" />
           <Comment name="hungry" content="배고파" />
-          <Input func={this.props.func} />
+          <Input func={this.props.func} index={this.props.index} />
         </View>
       </View>
     );
@@ -184,7 +197,7 @@ class Content extends Component {
 
 const styles = StyleSheet.create({
   contentView: {
-    height: hp('80%'),
+    height: hp('86%'),
     marginVertical: hp('1%'),
   },
   contentId: {
@@ -239,10 +252,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  postContent: {
+    height: hp('3%'),
+    //backgroundColor: 'pink',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: '3%',
+    marginRight: '3%',
+  },
   cmtInput: {
     height: hp('5%'),
     flexDirection: 'row',
     marginTop: hp(1),
+  },
+  cmtID: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: hp('2.2%'),
+    marginRight: '3%',
+  },
+  moreCmt: {
+    height: hp('3%'),
+    //backgroundColor: 'orange',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: '3%',
+    marginRight: '3%',
   },
 });
 

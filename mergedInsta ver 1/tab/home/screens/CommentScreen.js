@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {PureComponent, createRef, useState} from 'react';
 import {
   Button,
   View,
@@ -7,16 +7,17 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+//AXIOS
 import axios from 'axios';
-import {Component} from 'react';
-import {Keyboard} from 'react-native';
-import {ActivityIndicator} from 'react-native';
 
 const renderItem = ({item, index}, func1) => (
   <CmtList
@@ -28,7 +29,7 @@ const renderItem = ({item, index}, func1) => (
   />
 );
 
-export default class CommentScreen extends Component {
+export default class CommentScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,14 +38,15 @@ export default class CommentScreen extends Component {
       page: 1,
       isLoading: true,
     };
-    this.flatListRef = React.createRef();
-    this.myRef = React.createRef();
+    this.flatListRef = createRef();
+    this.myRef = createRef();
     this.focusInput = this.focusInput.bind(this);
     this.scrollScreen = this.scrollScreen.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.setTime = this.setTime.bind(this);
     //this.props.TabNavigation.setOptions({tabBarVisible: false});
   }
+
   componentDidMount() {
     //CommentScreen 들어왔을때 딱 한번만 실행
     this.getComments();
@@ -64,15 +66,11 @@ export default class CommentScreen extends Component {
   }
   getComments() {
     axios
-      .get(
-        `http://34.64.201.219:8080/api/v1/comments/2?page=${this.state.page}`,
-        {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE2MTIzNTc1LCJleHAiOjE2MTYxNjY3NzV9.C8ImSasuC6B4U1jDuKRA89udL1uMUvEqrxGOttNYDxA',
-          },
+      .get(`${axios.defaults.baseURL}/comments/1?page=${this.state.page}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
         },
-      )
+      })
       .then((response) => {
         response.data.data.map((ele) => {
           ele.created_at = this.setTime(ele.created_at);
@@ -98,20 +96,19 @@ export default class CommentScreen extends Component {
     }
     axios
       .post(
-        'http://34.64.201.219:8080/api/v1/comments/2',
+        `${axios.defaults.baseURL}/comments/1`,
         {content: this.state.value},
         {
           headers: {
-            Authorization:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsIm5hbWUiOiJ0ZXN0IiwiaWF0IjoxNjE2MTIzNTc1LCJleHAiOjE2MTYxNjY3NzV9.C8ImSasuC6B4U1jDuKRA89udL1uMUvEqrxGOttNYDxA',
+            Authorization: axios.defaults.headers.common['Authorization'],
           },
         },
       )
       .then((response) => {
-        this.getComments();
-        console.log(response.data);
-        console.log('---------------');
-        console.log(this.state.DATA);
+        this.setState({
+          DATA: this.state.DATA.concat(response.data.data),
+          value: '',
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -142,7 +139,7 @@ export default class CommentScreen extends Component {
             renderItem={({item, index}) => {
               return renderItem({item, index}, this.focusInput);
             }}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
             onEndReached={this.loadMore}
             onEndReachedThreshold={0.6}
             ListFooterComponent={
@@ -176,7 +173,7 @@ export default class CommentScreen extends Component {
   }
 }
 
-class CmtList extends Component {
+class CmtList extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -229,7 +226,7 @@ class CmtList extends Component {
 }
 
 const CmtLikes = () => {
-  const [isLikes, setIsLikes] = React.useState(true);
+  const [isLikes, setIsLikes] = useState(true);
   return (
     <View style={styles.LikesIcon}>
       <Ionicons

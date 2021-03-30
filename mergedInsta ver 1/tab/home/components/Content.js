@@ -20,6 +20,7 @@ import axios from 'axios';
 
 //REDUX
 import {connect} from 'react-redux';
+import {FlatList} from 'react-native-gesture-handler';
 
 const ContentIcon = (props) => {
   const btnName = props.name;
@@ -120,6 +121,17 @@ class Content extends PureComponent {
   constructor(props) {
     super(props);
   }
+
+  renderItem({item}) {
+    return (
+      <Image
+        style={styles.imgView}
+        source={{
+          uri: `http://34.64.201.219:8080/api/v1/uploads/${item.item}`,
+        }}
+      />
+    );
+  }
   render() {
     return (
       <View style={styles.contentView}>
@@ -154,12 +166,17 @@ class Content extends PureComponent {
             </TouchableOpacity>
           </View>
         </View>
-        <Image
-          style={styles.imgView}
-          source={{
-            uri: `http://34.64.201.219:8080/api/v1/uploads/${this.props.item.image[0]}`,
-          }}
-        />
+        <View style={styles.imgView}>
+          <FlatList
+            horizontal
+            //showsHorizontalScrollIndicator
+            data={this.props.item.image}
+            renderItem={(item) => {
+              return this.renderItem({item});
+            }}
+            keyExtractor={(index) => index.toString()}
+          />
+        </View>
         <View style={styles.iconView}>
           <View style={styles.mainIcon}>
             <ContentIcon name="ios-heart-outline" />

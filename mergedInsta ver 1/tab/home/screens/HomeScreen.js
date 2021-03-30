@@ -21,16 +21,18 @@ import {connect} from 'react-redux';
 import ModalScreen from '../modals/modalScreen';
 import Story from '../components/Story';
 import Content from '../components/Content';
+import StoryScreen from './StoryScreen';
 
 class HomeScreen extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {isModal: false, posts: []};
+    this.state = {isModal: false, isStory: false, posts: [], story: []};
     this.cmtRef = React.createRef();
     this.scrollTo = this.scrollTo.bind(this);
   }
   componentDidMount() {
     this.getContent();
+    this.getStory();
   }
   getContent() {
     axios
@@ -49,12 +51,33 @@ class HomeScreen extends PureComponent {
         console.log(error);
       });
   }
+  getStory() {
+    axios
+      .get(`${axios.defaults.baseURL}/stories/${this.props.user_id}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({
+          story: response.data.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   toggleModal() {
     this.setState({
       isModal: !this.state.isModal,
     });
   }
-  renderItem({item, index}, func) {
+  toggleStory() {
+    this.setState({
+      isStory: !this.state.isStory,
+    });
+  }
+  renderContent({item, index}, func) {
     return (
       <Content
         item={item}
@@ -65,6 +88,9 @@ class HomeScreen extends PureComponent {
       />
     );
   }
+  renderStory({item}) {
+    return <Story name={item.writer} modalHandler={() => this.toggleStory()} />;
+  }
   scrollTo(index) {
     index = (index + 1) * 400 + index * 250; //..흑흑..
     this.cmtRef.current.scrollToOffset({offset: index});
@@ -73,26 +99,30 @@ class HomeScreen extends PureComponent {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.storyView}>
-          <ScrollView horizontal={true}>
-            <Story name="내 스토리" />
-            <Story name="yeri__k" />
-            <Story name="m0ovie" />
-            <Story name="negative_bin" />
-            <Story name="James_Jung" />
-            <Story name="daaaayey" />
-            <Story name="miseong_k" />
-          </ScrollView>
+          <FlatList
+            horizontal
+            data={this.state.story}
+            renderItem={({item}) => {
+              return this.renderStory({item});
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
         <FlatList
           ref={this.cmtRef}
           data={this.state.posts}
           renderItem={({item, index}) => {
-            return this.renderItem({item, index}, this.scrollTo);
+            return this.renderContent({item, index}, this.scrollTo);
           }}
           keyExtractor={(item, index) => index.toString()}
         />
         {this.state.isModal ? (
           <ModalScreen modalHandler={() => this.toggleModal()} />
+        ) : (
+          <></>
+        )}
+        {this.state.isStory ? (
+          <StoryScreen modalHandler={() => this.toggleStory()} />
         ) : (
           <></>
         )}

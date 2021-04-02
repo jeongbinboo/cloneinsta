@@ -50,7 +50,6 @@ export default class StoryScreen extends PureComponent {
             style={styles.imgView}
             source={{
               uri: `http://34.64.201.219:8080/api/v1/uploads/1617113394286_5.jpg`,
-              //왜 ${this.state.story.url} 안됨?
             }}
           />
         </View>

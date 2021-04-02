@@ -1,4 +1,4 @@
-import React, {PureComponent, useRef, useState} from 'react';
+import React, {PureComponent, useEffect, useRef, useState} from 'react';
 import {
   Text,
   View,
@@ -22,39 +22,90 @@ import axios from 'axios';
 import {connect} from 'react-redux';
 import {FlatList} from 'react-native-gesture-handler';
 
-const ContentIcon = (props) => {
-  const btnName = props.name;
-  let tmpBtnName = '';
-  const [isClicked, setIsClicked] = useState(true);
-  if (btnName === 'ios-heart-outline') {
-    tmpBtnName = 'ios-heart';
-  } else if (btnName === 'ios-chatbubble-outline') {
-    tmpBtnName = 'ios-chatbubble';
-  } else if (btnName === 'ios-paper-plane-outline') {
-    tmpBtnName = 'ios-paper-plane';
-  } else {
-    tmpBtnName = 'ios-bookmark';
+class ContentIcon extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.btnName = this.props.name;
+    this.tmpBtnName = '';
+    this.state = {
+      isClicked: false,
+      isLiked: false,
+    };
+    //this.getLikes = this.getLikes.bind(this);
+    this.setLikes = this.setLikes.bind(this);
+    this.isFunc = this.isFunc.bind(this);
   }
-  const isChat = () => {
-    if (btnName === 'ios-chatbubble-outline') {
-      props.navigation.navigate('CommentScreen');
+  /*componentDidMount() {
+    this.getLikes();
+  }
+  getLikes() {
+    axios
+      .post(`${axios.defaults.baseURL}/posts/${this.props.index + 1}/like`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        console.log(response.data.data[0]);
+        if (response.data.data[0].likes !== 0) {
+          this.setState({isLiked: true});
+          console.log('hiz');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }*/
+  setLikes(i) {
+    this.setState({isClicked: !this.state.isClicked});
+    axios
+      .post(`${axios.defaults.baseURL}/posts/${i + 1}/like`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({isLiked: !this.state.isLiked});
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  isFunc() {
+    if (this.btnName === 'ios-chatbubble-outline') {
+      this.props.navigation.navigate('CommentScreen');
     } else {
-      setIsClicked(!isClicked);
+      this.setState({isClicked: !this.state.isClicked});
     }
-  };
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        isChat();
-      }}>
-      <Ionicons
-        name={isClicked ? btnName : tmpBtnName}
-        size={30}
-        style={{paddingRight: wp('3%'), marginLeft: wp('1%')}}
-      />
-    </TouchableOpacity>
-  );
-};
+  }
+  render() {
+    if (this.btnName === 'ios-heart-outline') {
+      this.tmpBtnName = 'ios-heart';
+    } else if (this.btnName === 'ios-chatbubble-outline') {
+      this.tmpBtnName = 'ios-chatbubble';
+    } else if (this.btnName === 'ios-paper-plane-outline') {
+      this.tmpBtnName = 'ios-paper-plane';
+    } else {
+      this.tmpBtnName = 'ios-bookmark';
+    }
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.btnName === 'ios-heart-outline' ||
+          this.tmpBtnName === 'ios-heart'
+            ? this.setLikes(this.props.index)
+            : this.isFunc();
+        }}>
+        <Ionicons
+          name={this.state.isClicked ? this.tmpBtnName : this.btnName}
+          size={30}
+          style={{paddingRight: wp('3%'), marginLeft: wp('1%')}}
+        />
+      </TouchableOpacity>
+    );
+  }
+}
 
 const LikesId = () => {
   return (
@@ -121,7 +172,6 @@ class Content extends PureComponent {
   constructor(props) {
     super(props);
   }
-
   renderItem({item}) {
     return (
       <Image
@@ -179,7 +229,7 @@ class Content extends PureComponent {
         </View>
         <View style={styles.iconView}>
           <View style={styles.mainIcon}>
-            <ContentIcon name="ios-heart-outline" />
+            <ContentIcon name="ios-heart-outline" index={this.props.index} />
             <ContentIcon
               name="ios-chatbubble-outline"
               navigation={this.props.navigation}
@@ -203,7 +253,7 @@ class Content extends PureComponent {
               </Text>
             </TouchableOpacity>
           </View>
-          <Comment name="sleepy" content="졸려" />
+          <Comment name="sleepy" content="ㅋ" />
           <Comment name="hungry" content="배고파" />
           <Input func={this.props.func} index={this.props.index} />
         </View>

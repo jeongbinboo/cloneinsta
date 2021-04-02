@@ -19,6 +19,9 @@ import {
 //AXIOS
 import axios from 'axios';
 
+//REDUX
+import {connect} from 'react-redux';
+
 const renderItem = ({item, index}, func1) => (
   <CmtList
     name={item.writer}
@@ -35,15 +38,17 @@ export default class CommentScreen extends PureComponent {
     this.state = {
       value: '',
       DATA: [],
+      REPLY: [],
       page: 1,
       isLoading: true,
+      isReplyInput: false,
     };
     this.flatListRef = createRef();
     this.myRef = createRef();
     this.focusInput = this.focusInput.bind(this);
-    this.scrollScreen = this.scrollScreen.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.setTime = this.setTime.bind(this);
+    this.cancelReply = this.cancelReply.bind(this);
     //this.props.TabNavigation.setOptions({tabBarVisible: false});
   }
 
@@ -89,45 +94,72 @@ export default class CommentScreen extends PureComponent {
   }
   postComments() {
     Keyboard.dismiss();
-    //아직 댓글을 추가 해야만 댓글 나옴.
     if (this.state.value === '') {
       alert('내용을 입력하세요.');
       return;
     }
-    axios
-      .post(
-        `${axios.defaults.baseURL}/comments/1`,
-        {content: this.state.value},
-        {
-          headers: {
-            Authorization: axios.defaults.headers.common['Authorization'],
+    if (this.state.isReplyInput) {
+      //답글
+      //답글 확인하는 api 아직 없어서 아직 확인 못함
+      axios
+        .post(
+          `${axios.defaults.baseURL}/comments/1`,
+          {content: this.state.value},
+          {
+            headers: {
+              Authorization: axios.defaults.headers.common['Authorization'],
+            },
           },
-        },
-      )
-      .then((response) => {
-        this.setState({
-          DATA: this.state.DATA.concat(response.data.data),
-          value: '',
+        )
+        .then((response) => {
+          this.setState({
+            REPLY: this.state.REPLY.concat(response.data.data),
+            value: '',
+          });
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  scrollScreen() {
-    //this.flatListRef.current.scrollToOffset({animated: true, offset: 1});
+    } else {
+      //댓글
+      axios
+        .post(
+          `${axios.defaults.baseURL}/comments/1`,
+          {content: this.state.value},
+          {
+            headers: {
+              Authorization: axios.defaults.headers.common['Authorization'],
+            },
+          },
+        )
+        .then((response) => {
+          this.setState({
+            DATA: this.state.DATA.concat(response.data.data),
+            value: '',
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
   focusInput(index) {
     this.myRef.current.focus();
+    this.setState({isReplyInput: true});
     if (index >= 3) index = index - 3;
-    this.flatListRef.current.scrollToIndex({index: index}); //flatlist index 넣으면 됨
+    this.flatListRef.current.scrollToIndex({index: index});
   }
   loadMore() {
+    //무한스크롤
     if (this.state.isLoading) {
       return;
     } else {
-      this.getComments();
+      //this.getComments(); 자꾸 오류남
     }
+  }
+  cancelReply() {
+    Keyboard.dismiss();
+    this.setState({isReplyInput: false});
   }
   render() {
     return (
@@ -150,6 +182,16 @@ export default class CommentScreen extends PureComponent {
           />
         </View>
         <View style={styles.inputView}>
+          {this.state.isReplyInput ? (
+            <View style={styles.reply}>
+              <Text>답글 남기는 중...</Text>
+              <TouchableOpacity onPress={this.cancelReply}>
+                <Text>X</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <></>
+          )}
           <View style={styles.inputTextView}>
             <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
             <View style={styles.submitView}>
@@ -160,7 +202,6 @@ export default class CommentScreen extends PureComponent {
                 value={this.state.value}
                 placeholder={'댓글 달기...'}
                 placeholderTextColor="grey"
-                //onFocus={this.scrollScreen}
               />
               <TouchableOpacity onPress={() => this.postComments()}>
                 <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
@@ -176,77 +217,139 @@ export default class CommentScreen extends PureComponent {
 class CmtList extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {reply: false};
   }
   render() {
     return (
-      <View style={styles.cmtView}>
-        <View style={{marginRight: wp('1%')}}>
-          <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
-        </View>
-        <View style={styles.cmt}>
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  marginRight: wp('2%'),
-                  fontSize: hp('2.3%'),
-                }}>
-                {this.props.name}
-              </Text>
-            </TouchableOpacity>
-            <Text style={{fontSize: hp('2.3%')}}>{this.props.content}</Text>
+      <>
+        <View style={styles.cmtView}>
+          <View style={{marginRight: wp('1%')}}>
+            <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
           </View>
-          <View style={styles.cmtExtraView}>
-            <Text
-              style={{
-                color: 'grey',
-                marginRight: wp('8%'),
-                fontSize: hp('1.8%'),
-              }}>
-              {this.props.time}시간 전
-            </Text>
-            <TouchableOpacity
-              onPress={() => this.props.func1(this.props.index)}>
+          <View style={styles.cmt}>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    marginRight: wp('2%'),
+                    fontSize: hp('2.3%'),
+                  }}>
+                  {this.props.name}
+                </Text>
+              </TouchableOpacity>
+              <Text style={{fontSize: hp('2.3%')}}>{this.props.content}</Text>
+            </View>
+            <View style={styles.cmtExtraView}>
               <Text
                 style={{
-                  fontWeight: 'bold',
                   color: 'grey',
+                  marginRight: wp('8%'),
                   fontSize: hp('1.8%'),
                 }}>
-                답글 달기
+                {this.props.time}시간 전
               </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.props.func1(this.props.index)}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    color: 'grey',
+                    fontSize: hp('1.8%'),
+                  }}>
+                  답글 달기
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
+          <CmtLikes index={this.props.index} />
         </View>
-        <CmtLikes />
+        {this.state.reply ? ( //renderItem으로 reply..?
+          <View>
+            <Text>하이</Text>
+          </View>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  }
+}
+
+class CmtLikes extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {isLikes: false};
+    this.setIsLikes = this.setIsLikes.bind(this);
+  }
+  componentDidMount() {
+    this.getIsLikes();
+  }
+  setIsLikes(i) {
+    //this.setState({isLikes: !this.state.isLikes});
+    axios
+      .post(`${axios.defaults.baseURL}/comments/${i + 1}/like`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({isLikes: !this.state.isLikes});
+        //console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  getIsLikes() {
+    axios
+      .get(`${axios.defaults.baseURL}/comments/${this.props.index + 1}/like`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        response.data.data.map((ele) => {
+          if (ele.user_id === 'james') {
+            //로그인한 사용자 user_id에 따라 바꿔야됨.
+            this.setState({isLikes: true});
+          }
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  render() {
+    return (
+      <View style={styles.LikesIcon}>
+        <Ionicons
+          name={this.state.isLikes ? 'ios-heart' : 'ios-heart-outline'}
+          size={hp('3%')}
+          color="grey"
+          style={{marginRight: wp('1%')}}
+          onPress={() => {
+            this.setIsLikes(this.props.index);
+          }}
+        />
       </View>
     );
   }
 }
 
-const CmtLikes = () => {
-  const [isLikes, setIsLikes] = useState(true);
-  return (
-    <View style={styles.LikesIcon}>
-      <Ionicons
-        name={isLikes ? 'ios-heart-outline' : 'ios-heart'}
-        size={hp('3%')}
-        color="grey"
-        style={{marginRight: wp('1%')}}
-        onPress={() => setIsLikes(!isLikes)}
-      />
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 0.9,
   },
-  Cmtcontainer: {
-    //flex: 1,
-    //justifyContent: 'flex-end',
+  reply: {
+    backgroundColor: 'lightgrey',
+    height: hp(4),
+    display: 'flex',
+    paddingLeft: wp(2),
+    paddingRight: wp(2),
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   cmtView: {
     height: hp(7),
@@ -280,8 +383,6 @@ const styles = StyleSheet.create({
     //height: hp('15%'),
     position: 'absolute',
     bottom: 0,
-    borderTopWidth: 1,
-    borderColor: 'grey',
     backgroundColor: 'white',
   },
   IconView: {
@@ -298,6 +399,8 @@ const styles = StyleSheet.create({
     //height: '70%',
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopWidth: 1,
+    borderColor: 'grey',
   },
   submitView: {
     flexDirection: 'row',
@@ -319,3 +422,10 @@ const styles = StyleSheet.create({
     marginLeft: wp('1%'),
   },
 });
+
+const mapStateToProps = (state) => ({
+  name: state.userReducer.name,
+  user_id: state.userReducer.user_id,
+});
+
+connect(mapStateToProps)(CmtLikes);

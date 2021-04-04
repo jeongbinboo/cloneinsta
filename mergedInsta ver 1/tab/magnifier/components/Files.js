@@ -14,9 +14,7 @@ export default class Files extends React.Component {
   _renderItem = ({item}) => (
     <React.Fragment>
       <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity
-          style={styles.touch}
-          onPress={navigation.navigate('Login')}>
+        <TouchableOpacity style={styles.touch}>
           <Image
             source={{
               uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.data[0]}`,

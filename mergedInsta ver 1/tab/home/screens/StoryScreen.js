@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Button} from 'native-base';
+//import {Button} from 'native-base';
 import React from 'react';
 import {PureComponent} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';

@@ -17,8 +17,33 @@ import CommentScreen from '../screens/CommentScreen';
 //redux
 import {connect} from 'react-redux';
 
+//axios
+import axios from 'axios';
+
 const ClickedPic = ({item, TabNavigation, user_id}) => {
   const navigation = useNavigation();
+
+  const [profileImage, setProfileImage] = useState('');
+
+  const getProfile = async () => {
+    axios
+      .get(`${axios.defaults.baseURL}users/${user_id}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+        params: {
+          user_id: `${user_id}`,
+        },
+      })
+      .then((response) => {
+        setProfileImage(response.data.data[0].profile_image);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  getProfile();
 
   return (
     <View style={styles.container}>
@@ -32,8 +57,16 @@ const ClickedPic = ({item, TabNavigation, user_id}) => {
                 alignItems: 'center',
               }}>
               <Image
-                style={{height: 60, width: 60, marginLeft: 5}}
-                source={require('../images/noProfile.png')}
+                style={{height: 40, width: 40, margin: 9, borderRadius: 70}}
+                //source={require('../images/noProfile.png')}
+                source={{
+                  uri:
+                    profileImage ===
+                    ('' ||
+                      'https://instagram.fdel3-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fdel3-1.fna.fbcdn.net&_nc_ohc=NyXVWUpcBzMAX9SGJRm&edm=ANmP7GQAAAAA&ccb=7-4&oh=540c619fc854da05f400a2750451847d&oe=608E2CCF&_nc_sid=276363&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-4')
+                      ? 'https://instagram.fdel3-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fdel3-1.fna.fbcdn.net&_nc_ohc=NyXVWUpcBzMAX9SGJRm&edm=ANmP7GQAAAAA&ccb=7-4&oh=540c619fc854da05f400a2750451847d&oe=608E2CCF&_nc_sid=276363&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-4'
+                      : `http://34.64.201.219:8080/api/v1/uploads/${profileImage}`,
+                }}
               />
               <Text style={styles.PostedByText}>{user_id}</Text>
             </View>
@@ -95,8 +128,6 @@ const ClickedPic = ({item, TabNavigation, user_id}) => {
           </View>
           {/* people who like my post */}
           <View style={{marginTop: 10, marginLeft: 10, flexDirection: 'row'}}>
-            <Text style={styles.toBold}>Jandi</Text>
-            <Text style={styles.defaultTextSize}>님 외 </Text>
             <Text style={styles.toBold}>{item.likes}</Text>
             <Text style={styles.defaultTextSize}>명이 좋아합니다</Text>
           </View>

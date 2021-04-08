@@ -77,7 +77,6 @@ class StackNav extends React.Component {
               <TouchableOpacity
                 style={{marginRight: 5}}
                 onPress={() => {
-                  alr();
                   navigation.goBack();
                   this.props.TabNavigation.setOptions({
                     tabBarVisible: true,

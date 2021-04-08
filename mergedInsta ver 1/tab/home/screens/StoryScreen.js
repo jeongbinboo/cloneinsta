@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import {PureComponent} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
+import {PanGestureHandler, FlatList} from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -14,45 +15,68 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 export default class StoryScreen extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {story: []};
     this.getStory = this.getStory.bind(this);
+    this._onRefresh = this._onRefresh.bind(this);
+    this.state = {story: []};
   }
   componentDidMount() {
     this.getStory();
   }
   getStory() {
     axios
-      .get(`${axios.defaults.baseURL}/stories/james`, {
+      .get(`${axios.defaults.baseURL}/stories/test`, {
         headers: {
           Authorization: axios.defaults.headers.common['Authorization'],
         },
       })
       .then((response) => {
-        //console.log(response.data);
         this.setState({
           story: response.data.data,
         });
-        console.log(this.state.story);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('storyError' + error);
       });
+  }
+  _onRefresh() {
+    //밑으로 내리면 닫힘
+    this.props.storyHandler();
+  }
+  renderItem({item}) {
+    return (
+      <Image
+        style={styles.imgView}
+        source={{uri: `http://34.64.201.219:8080/api/v1/${item.url}`}}
+      />
+    );
   }
   render() {
     return (
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.background}
-          onPress={this.props.modalHandler}
-        />
-        <View style={styles.modalView}>
-          <Image
+          onPress={() => this.props.storyHandler()}>
+          <View
+            style={{
+              marginTop: hp('20%'),
+            }}>
+            <FlatList
+              horizontal
+              onRefresh={this._onRefresh}
+              data={this.state.story}
+              renderItem={(item) => {
+                return this.renderItem({item});
+              }}
+              keyExtractor={(index) => index.toString()}
+            />
+          </View>
+        </TouchableOpacity>
+        {/*<Image
             style={styles.imgView}
             source={{
-              uri: `http://34.64.201.219:8080/api/v1/uploads/1617113394286_5.jpg`,
+              uri: `http://34.64.201.219:8080/api/v1/${this.state.story}`,
             }}
-          />
-        </View>
+          />*/}
       </View>
     );
   }
@@ -61,6 +85,9 @@ export default class StoryScreen extends PureComponent {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: hp('100%'),
     width: wp('100%'),
     backgroundColor: 'transparent',
@@ -71,17 +98,9 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     backgroundColor: 'rgba(0,0,0,0.8)',
   },
-  modalView: {
-    display: 'flex',
-    marginHorizontal: wp('5%'),
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: hp('80%'),
-  },
   imgView: {
     height: hp('50%'),
     width: wp('100%'),
-    //backgroundColor: 'blue',
+    backgroundColor: 'blue',
   },
 });

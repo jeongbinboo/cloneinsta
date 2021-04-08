@@ -6,7 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import StoryScreen from '../screens/StoryScreen';
+
 //ICON
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -18,7 +18,10 @@ export default class Story extends PureComponent {
     return (
       <View>
         <View style={styles.storyId}>
-          <TouchableOpacity onPress={this.props.modalHandler}>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.storyHandler();
+            }}>
             <Ionicons
               name="ios-person-circle-outline"
               size={65}

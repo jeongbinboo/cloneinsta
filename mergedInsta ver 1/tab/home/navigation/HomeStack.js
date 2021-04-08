@@ -7,7 +7,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import CommentScreen from '../screens/CommentScreen';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import ModalScreen from '../modals/modalScreen';
 
 const HeaderIcon = (props) => {
   return (
@@ -26,6 +25,14 @@ const Stack = createStackNavigator();
 class HomeStack extends Component {
   constructor(props) {
     super(props);
+    this.state = {isComment: false};
+    this.isCommentOpen = this.isCommentOpen.bind(this);
+  }
+  isCommentOpen() {
+    this.setState({isComment: !this.state.isComment});
+    if (this.state.isComment === false) {
+      this.props.TabNavigation.setOptions({tabBarVisible: false});
+    }
   }
   render() {
     return (
@@ -33,7 +40,7 @@ class HomeStack extends Component {
         <Stack.Navigator>
           <Stack.Screen
             name="Instagram"
-            component={HomeScreen}
+            //component={HomeScreen}
             options={{
               headerStyle: {
                 backgroundColor: 'white',
@@ -55,9 +62,15 @@ class HomeStack extends Component {
                   <HeaderIcon name="ios-paper-plane-outline" />
                 </View>
               ),
-            }}
-          />
-
+            }}>
+            {({navigation}) => (
+              <HomeScreen
+                storyHandler={this.props.storyHandler}
+                StackNavi={navigation}
+                cmtOpen={() => this.isCommentOpen()}
+              />
+            )}
+          </Stack.Screen>
           <Stack.Screen
             name="CommentScreen"
             //component={CommentScreen}
@@ -79,7 +92,12 @@ class HomeStack extends Component {
               ),
               headerRight: () => <HeaderIcon name="ios-paper-plane-outline" />,
             })}>
-            {() => <CommentScreen TabNavigation={this.props.TabNavigation} />}
+            {() => (
+              <CommentScreen
+                TabNavigation={this.props.TabNavigation}
+                cmtOpen={() => this.isCommentOpen()}
+              />
+            )}
           </Stack.Screen>
         </Stack.Navigator>
       </>

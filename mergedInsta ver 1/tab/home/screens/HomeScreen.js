@@ -72,24 +72,25 @@ class HomeScreen extends PureComponent {
       isModal: !this.state.isModal,
     });
   }
-  toggleStory() {
+  /*toggleStory() {
     this.setState({
       isStory: !this.state.isStory,
     });
-  }
+  }*/
   renderContent({item, index}, func) {
     return (
       <Content
         item={item}
         modalHandler={() => this.toggleModal()}
-        navigation={this.props.navigation}
+        navigation={this.props.StackNavi}
+        cmtOpen={this.props.cmtOpen}
         func={func}
         index={index}
       />
     );
   }
   renderStory({item}) {
-    return <Story name={item.writer} modalHandler={() => this.toggleStory()} />;
+    return <Story name={item.writer} storyHandler={this.props.storyHandler} />;
   }
   scrollTo(index) {
     index = (index + 1) * 400 + index * 250; //..흑흑..

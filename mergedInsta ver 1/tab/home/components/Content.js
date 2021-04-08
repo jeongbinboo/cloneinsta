@@ -75,6 +75,7 @@ class ContentIcon extends PureComponent {
   isFunc() {
     if (this.btnName === 'ios-chatbubble-outline') {
       this.props.navigation.navigate('CommentScreen');
+      this.props.cmtOpen();
     } else {
       this.setState({isClicked: !this.state.isClicked});
     }
@@ -171,6 +172,7 @@ const Input = (props) => {
 class Content extends PureComponent {
   constructor(props) {
     super(props);
+    this.func = this.func.bind(this);
   }
   renderItem({item}) {
     return (
@@ -181,6 +183,10 @@ class Content extends PureComponent {
         }}
       />
     );
+  }
+  func() {
+    this.props.navigation.navigate('CommentScreen');
+    this.props.cmtOpen();
   }
   render() {
     return (
@@ -233,6 +239,7 @@ class Content extends PureComponent {
             <ContentIcon
               name="ios-chatbubble-outline"
               navigation={this.props.navigation}
+              cmtOpen={this.props.cmtOpen}
             />
             <ContentIcon name="ios-paper-plane-outline" />
           </View>
@@ -246,9 +253,7 @@ class Content extends PureComponent {
           </View>
           <View style={styles.moreCmt}>
             <TouchableOpacity>
-              <Text
-                style={{color: 'grey'}}
-                onPress={() => this.props.navigation.navigate('CommentScreen')}>
+              <Text style={{color: 'grey'}} onPress={() => this.func()}>
                 댓글 더보기
               </Text>
             </TouchableOpacity>

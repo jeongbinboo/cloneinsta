@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //import HomeScreen from '../../components/HomeScreen';
 //import CommentScreen from '../../components/CommentScreen';
 import Profile from './profile/Profile';
-import HomeStack from './home/navigation/HomeStack';
+import Home from './home/navigation/Home';
 import Magnifier from './magnifier/magnifier';
 
 const ShoppingScreen = () => {
@@ -28,7 +28,7 @@ const UploadScreen = () => {
 //const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const Home = () => {
+const home = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -50,7 +50,7 @@ const Home = () => {
             );
           },
         }}>
-        {({navigation}) => <HomeStack TabNavigation={navigation} />}
+        {({navigation}) => <Home TabNavigation={navigation} />}
       </Tab.Screen>
       <Tab.Screen
         name="Magnifier"
@@ -114,4 +114,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default home;

@@ -24,7 +24,7 @@ export const alr = () => {
 
   mapDispatchToProps.dispatchChangeInfo(changeUserId, changeName);
 
-  mapDispatchToProps.dispatchChangeInfo(changeUserId, changeName);
+  //mapDispatchToProps.dispatchChangeInfo(changeUserId, changeName);
   mapDispatchToProps.hi();
   //mapStateToProps();
 };

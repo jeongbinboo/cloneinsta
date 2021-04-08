@@ -63,20 +63,17 @@ class NewPost extends React.Component {
           Authorization: axios.defaults.headers.common['Authorization'],
           'Content-Type':
             'multipart/form-data; charset=utf-8;boundary=${image_boundary}',
+          //'multipart/form-data; boundary=--------------------------552504422247061633021219',
         },
       })
       .then((response) => {
         console.log(response);
         console.log('성공');
-        //pictureUrl = response.data.data[0];
-        this.setState({picUrl: response.data.data[0]});
-        console.log(this.state.picUrl);
       })
       .catch((error) => {
-        //console.log(this.state.filename);
-        //console.log(this.state.img.uri);
-        //console.log(data);
         console.log(error);
+        console.log(error.status);
+        console.log(error.response);
         console.log('pic upload error');
       });
   };
@@ -146,7 +143,7 @@ class NewPost extends React.Component {
                   filename: response.fileName,
                   path: response.uri,
                   size: response.fileSize,
-*/
+                  */
                   fileName: response.fileName,
                   fileSize: response.fileSize,
                   height: response.height,
@@ -166,7 +163,7 @@ class NewPost extends React.Component {
                 });
 
                 console.log(response);
-                this.setState({data: data});
+                //this.setState({data: data});
                 this.setState({img: uri});
                 this.setState({filename: response.fileName});
                 //console.log(this.state.data);

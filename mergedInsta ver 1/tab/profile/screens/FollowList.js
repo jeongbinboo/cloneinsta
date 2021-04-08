@@ -18,17 +18,21 @@ import axios from 'axios';
 //redux
 import {connect} from 'react-redux';
 
+const FollowContext = React.createContext();
+
 //component
 //import FollwerItem from '../components/FollowerItem';
 //error while updating
 const FollowList = ({route, navigation, user_id}) => {
   useEffect(() => {
     getFollowers();
+    getFollowees();
   }, []);
 
   const {FollowFlag} = route.params;
 
   const [FollowerList, setFollowerList] = useState([]);
+  const [FolloweeList, setFolloweeList] = useState([]);
 
   const getFollowers = () => {
     axios
@@ -49,110 +53,122 @@ const FollowList = ({route, navigation, user_id}) => {
       });
   };
 
+  const getFollowees = () => {
+    axios
+      .get(`${axios.defaults.baseURL}users/${user_id}/followees`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+        params: {
+          user_id: `${user_id}`,
+        },
+      })
+      .then((response) => {
+        setFolloweeList(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const unFollow = (userId) => {
+    axios
+      .put(`${axios.defaults.baseURL}users/${userId}/unfollow`, '', {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+          'Content-Length': '0',
+        },
+        params: {
+          user_id: `${userId}`,
+        },
+      })
+      .then((response) => {
+        console.log(`successfully unfollow #${userId}`);
+        getFollowees();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   //console.log(FollowerList);
   return (
-    <TopTab.Navigator
-      initialRouteName={FollowFlag === 1 ? '팔로워' : '팔로잉'}
-      tabBarOptions={{
-        pressColor: 'black',
-        style: {
-          backgroundColor: 'white',
-        },
-        indicatorStyle: {
-          backgroundColor: 'black',
-        },
-        activeTintColor: '#000',
-        inactiveTintColor: '#d1cece',
+    <FollowContext.Provider
+      value={{
+        unFollow: unFollow,
       }}>
-      {/* <TopTab.Screen name="팔로워">{() => <Follower />}</TopTab.Screen>
-      <TopTab.Screen name="팔로잉"> {() => <Following />}</TopTab.Screen> */}
-      {/* children={() => <AdminPage userData={this.props.userSettings} />} */}
-      <TopTab.Screen
-        name="팔로워"
-        children={() => <Follower FollowerList={FollowerList} />}
-      />
-      <TopTab.Screen name="팔로잉" children={() => <Following />} />
-    </TopTab.Navigator>
+      <TopTab.Navigator
+        initialRouteName={FollowFlag === 1 ? '팔로워' : '팔로잉'}
+        tabBarOptions={{
+          pressColor: 'black',
+          style: {
+            backgroundColor: 'white',
+          },
+          indicatorStyle: {
+            backgroundColor: 'black',
+          },
+          activeTintColor: '#000',
+          inactiveTintColor: '#d1cece',
+        }}>
+        <TopTab.Screen
+          name="팔로워"
+          children={() => <Follower FollowerList={FollowerList} />}
+        />
+        <TopTab.Screen
+          name="팔로잉"
+          children={() => <Following FolloweeList={FolloweeList} />}
+        />
+      </TopTab.Navigator>
+    </FollowContext.Provider>
   );
 };
 
-const FollowerData = [
-  {
-    id: '1',
-    name: 'Jandi',
-    image: require('../images/noProfile.png'),
-  },
-  {
-    id: '2',
-    name: 'James',
-    image: require('../images/noProfile.png'),
-  },
-  {
-    id: '3',
-    name: 'daye',
-    image: require('../images/noProfile.png'),
-  },
-  {
-    id: '4',
-    name: 'negative',
-    image: require('../images/noProfile.png'),
-  },
-  {
-    id: '5',
-    name: 'misung',
-    image: require('../images/noProfile.png'),
-  },
-];
-
-const FollowingData = [
-  {
-    id: '1',
-    name: 'Jandi',
-    image: require('../images/noProfile.png'),
-  },
-  {
-    id: '2',
-    name: 'James',
-    image: require('../images/noProfile.png'),
-  },
-];
-
 const FollowerItem = ({item}) => (
-  <View style={styles.FollowerItemView}>
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Image
-        style={{height: 70, width: 70}}
-        source={require('../images/noProfile.png')}
-      />
-      <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
-        {item.user_id}
-      </Text>
-    </View>
-    <View>
-      <TouchableOpacity style={styles.deleteBtn}>
-        <Text style={{fontWeight: 'bold'}}>삭제</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
+  <FollowContext.Consumer>
+    {(val) => (
+      <View style={styles.FollowerItemView}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image
+            style={{height: 70, width: 70}}
+            source={require('../images/noProfile.png')}
+          />
+          <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
+            {item.user_id}
+          </Text>
+        </View>
+        <View>
+          <TouchableOpacity style={styles.deleteBtn}>
+            <Text style={{fontWeight: 'bold'}}>삭제</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )}
+  </FollowContext.Consumer>
 );
 
-const FollowingItem = (item) => (
-  <View style={styles.FollowerItemView}>
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Image
-        style={{height: 70, width: 70}}
-        source={require('../images/noProfile.png')}
-      />
-      <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
-        {item.name}
-      </Text>
-    </View>
-    <View>
-      <TouchableOpacity style={styles.deleteBtn}>
-        <Text style={{fontWeight: 'bold'}}>팔로잉</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
+const FollowingItem = ({item}) => (
+  <FollowContext.Consumer>
+    {(val) => (
+      <View style={styles.FollowerItemView}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image
+            style={{height: 70, width: 70}}
+            source={require('../images/noProfile.png')}
+          />
+          <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
+            {item.user_id}
+          </Text>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.deleteBtn}
+            onPress={() => val.unFollow(item.user_id)}>
+            <Text style={{fontWeight: 'bold'}}>팔로잉</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )}
+  </FollowContext.Consumer>
 );
 
 const Follower = ({FollowerList}) => {
@@ -161,9 +177,6 @@ const Follower = ({FollowerList}) => {
       <FlatList
         data={FollowerList}
         renderItem={({item, index}) => {
-          //console.log(item);
-
-          //return FollowerItem(item);
           return <FollowerItem item={item} />;
         }}
         keyExtractor={(item, index) => index.toString()}
@@ -172,15 +185,15 @@ const Follower = ({FollowerList}) => {
   );
 };
 
-const Following = () => (
+const Following = ({FolloweeList}) => (
   <View style={{backgroundColor: 'white'}}>
     <FlatList
-      data={FollowingData}
+      data={FolloweeList}
       renderItem={({item}) => {
         //return FollowingItem(item);
-        return FollowingItem(item);
+        return <FollowingItem item={item} />;
       }}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item, index) => index.toString()}
     />
   </View>
 );

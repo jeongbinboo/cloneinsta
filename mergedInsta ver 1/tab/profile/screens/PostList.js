@@ -58,6 +58,7 @@ class PostList extends React.Component {
         <FlatList
           ref={(ref) => (this.myRef = ref)}
           initialScrollIndex={picId} //
+          //inverted //순서 바꿈
           onScrollToIndexFailed={(error) => {
             this.myRef.scrollToOffset({
               offset: error.averageItemLength * error.index,
@@ -76,7 +77,7 @@ class PostList extends React.Component {
             //this.toIndex(picId);
           }}*/
           style={{backgroundColor: 'white'}}
-          data={this.state.postData}
+          data={this.state.postData.reverse()}
           renderItem={({item}) => {
             return <ClickedPic item={item} TabNavigation={TabNavigation} />;
           }}

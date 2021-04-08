@@ -1,18 +1,8 @@
 //action : state에 영향을 주는
 
-// export const INIT_TOKEN = 'INIT_TOKEN';
-// export const INIT_ID = 'INIT_ID';
-// export const INIT_NAME = 'INIT_NAME';
-
 export const INIT_USER = 'INIT_USER';
 export const CHANGE_INFO = 'CHANGE_INFO';
-
-// export function initToken(token) {
-//   return {
-//     type: INIT_TOKEN,
-//     token: `${token}`,
-//   };
-// }
+export const SET_BIO = 'SET_BIO';
 
 export function init_user(token, user_id, name) {
   return {
@@ -30,9 +20,10 @@ export function change_info(user_id, name) {
     name: `${name}`,
   };
 }
-// export function initName(name) {
-//   return {
-//     type: INIT_NAME,
-//     name: `${name}`,
-//   };
-// }
+
+export function set_bio(bio) {
+  return {
+    type: SET_BIO,
+    bio: `${bio}`,
+  };
+}

@@ -17,9 +17,11 @@ import Story from '../components/Story';
 //icon
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //redux
 import {connect} from 'react-redux';
+import {set_bio} from '../../../redux/action';
 
 //axios
 import axios from 'axios';
@@ -29,11 +31,10 @@ class ProfileHome extends React.Component {
     super(props);
     this.state = {
       switchPicListFlag: 1,
-      bio: '',
+
       postData: [],
+      profileImage: '',
     };
-    //this.getProfile();
-    //this.getPosts();
   }
 
   componentDidMount() {
@@ -55,8 +56,11 @@ class ProfileHome extends React.Component {
     console.log('tagToMine');
   }
 
+  setBio = (bio) => {
+    this.props.dispatchSetBio(bio);
+  };
+
   getProfile = async () => {
-    //console.log(this.props.user_id);
     axios
       .get(`${axios.defaults.baseURL}users/${this.props.user_id}`, {
         headers: {
@@ -68,8 +72,13 @@ class ProfileHome extends React.Component {
       })
       .then((response) => {
         this.setState({
-          bio: response.data.data[0].bio,
+          profileImage: response.data.data[0].profile_image,
         });
+
+        this.setBio(response.data.data[0].bio);
+        if (response.data.data[0].bio == null) {
+          this.setBio('');
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -106,9 +115,10 @@ class ProfileHome extends React.Component {
           switchPicListFlag={this.state.switchPicListFlag}
           mineToTag={() => this.mineToTag()}
           tagToMine={() => this.tagToMine()}
-          bio={this.state.bio}
+          profileImage={this.state.profileImage}
           name={this.props.name}
           postData={this.state.postData}
+          bio2={this.props.bio2}
         />
       </View>
     );
@@ -122,20 +132,33 @@ const HeaderProfile = ({
   mineToTag,
   tagToMine,
   TabNavigation,
-  bio,
+  profileImage,
+  postData,
+  bio2,
 }) => {
+  //console.log(profileImage);
   return (
     <View>
       {/* profile picture + follow list */}
       <View style={styles.profileAndFollowView}>
-        <Image
-          style={{height: 100, width: 100}}
-          source={require('../images/noProfile.png')}
-        />
+        <View>
+          <Image
+            style={{margin: 10, height: 90, width: 90, borderRadius: 60}}
+            //source={require('../images/noProfile.png')}
+            source={{
+              uri:
+                profileImage ===
+                ('' ||
+                  'https://instagram.fdel3-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fdel3-1.fna.fbcdn.net&_nc_ohc=NyXVWUpcBzMAX9SGJRm&edm=ANmP7GQAAAAA&ccb=7-4&oh=540c619fc854da05f400a2750451847d&oe=608E2CCF&_nc_sid=276363&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-4')
+                  ? 'https://instagram.fdel3-1.fna.fbcdn.net/v/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fdel3-1.fna.fbcdn.net&_nc_ohc=NyXVWUpcBzMAX9SGJRm&edm=ANmP7GQAAAAA&ccb=7-4&oh=540c619fc854da05f400a2750451847d&oe=608E2CCF&_nc_sid=276363&ig_cache_key=YW5vbnltb3VzX3Byb2ZpbGVfcGlj.2-ccb7-4'
+                  : `http://34.64.201.219:8080/api/v1/uploads/${profileImage}`,
+            }}
+          />
+        </View>
 
         <View style={styles.followTextView}>
           <TouchableOpacity>
-            <Text style={styles.followNumText}>3</Text>
+            <Text style={styles.followNumText}>{postData.length}</Text>
             <Text style={styles.followNumText}>게시물</Text>
           </TouchableOpacity>
         </View>
@@ -164,7 +187,7 @@ const HeaderProfile = ({
       {/* name + bio*/}
       <View>
         <Text style={styles.nameText}>{name}</Text>
-        <Text style={{marginLeft: 10}}>{bio}</Text>
+        <Text style={{marginLeft: 10}}>{bio2}</Text>
       </View>
 
       {/* profile edit */}
@@ -177,7 +200,8 @@ const HeaderProfile = ({
       </View>
 
       {/* story */}
-      <ScrollView
+
+      {/* <ScrollView
         horizontal={true}
         //showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}>
@@ -188,7 +212,7 @@ const HeaderProfile = ({
         <Story />
         <Story />
         <Story />
-      </ScrollView>
+      </ScrollView> */}
 
       {/* picture display */}
       <View>
@@ -229,9 +253,11 @@ const MyPicList = ({
   mineToTag,
   tagToMine,
   TabNavigation,
-  bio,
   postData,
+  profileImage,
+  bio2,
 }) => {
+  //console.log(postData.length);
   return (
     <FlatList
       ListHeaderComponent={() => (
@@ -242,12 +268,16 @@ const MyPicList = ({
           mineToTag={mineToTag}
           tagToMine={tagToMine}
           TabNavigation={TabNavigation}
-          bio={bio}
+          profileImage={profileImage}
+          postData={postData}
+          bio2={bio2}
         />
       )}
       //style={{flexDirection: 'row'}}
       numColumns={3}
-      data={postData}
+      data={postData.reverse()}
+      //inverted
+
       renderItem={({item, index}) => {
         //여기 수정
         //console.log(item[0]);
@@ -274,11 +304,22 @@ const MyPicList = ({
           );
         }
       }}
+      //inverted
+      //stickyHeaderIndices={[0]}
     />
   );
 };
 
-const TaggedPicList = () => {};
+const TaggedPicList = () => (
+  <View style={styles.TagedPic}>
+    <AntDesign name="instagram" size={60} color="#3F3F3F" />
+    <Text style={{fontSize: 20, padding: 30, fontWeight: 'bold'}}>
+      회원님이 나온 사진 및 동영상
+    </Text>
+    <Text>사람들이 회원님을 사진또는 동영상에 태그하면</Text>
+    <Text>태그된 사진 또는 동영상이 여기에 표시됩니다.</Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   profileAndFollowView: {
@@ -324,11 +365,22 @@ const styles = StyleSheet.create({
   line: {
     borderBottomWidth: 2,
   },
+  TagedPic: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
 });
+
+const mapDispatchToProps = {
+  dispatchSetBio: (bio) => set_bio(bio),
+};
 
 const mapStateToProps = (state) => ({
   name: state.userReducer.name,
   user_id: state.userReducer.user_id,
+  bio2: state.userReducer.bio,
 });
 
-export default connect(mapStateToProps)(ProfileHome);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileHome);

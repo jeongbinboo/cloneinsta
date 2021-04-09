@@ -119,6 +119,7 @@ class ProfileHome extends React.Component {
           name={this.props.name}
           postData={this.state.postData}
           bio2={this.props.bio2}
+          user_id={this.props.user_id}
         />
       </View>
     );
@@ -135,6 +136,7 @@ const HeaderProfile = ({
   profileImage,
   postData,
   bio2,
+  user_id, //
 }) => {
   //console.log(profileImage);
   return (
@@ -165,7 +167,12 @@ const HeaderProfile = ({
 
         <View style={styles.followTextView}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('FollowList', {FollowFlag: 1})}>
+            onPress={() =>
+              navigation.navigate('FollowList', {
+                FollowFlag: 1,
+                //TabNavigation: TabNavigation,
+              })
+            }>
             <Text style={styles.followNumText}>152</Text>
             <Text style={styles.followNumText}>팔로워</Text>
           </TouchableOpacity>
@@ -176,6 +183,7 @@ const HeaderProfile = ({
             onPress={() =>
               navigation.navigate('FollowList', {
                 FollowFlag: 2,
+                //TabNavigation: TabNavigation,
               })
             }>
             <Text style={styles.followNumText}>161</Text>
@@ -256,6 +264,7 @@ const MyPicList = ({
   postData,
   profileImage,
   bio2,
+  user_id, //
 }) => {
   //console.log(postData.length);
   return (
@@ -271,6 +280,7 @@ const MyPicList = ({
           profileImage={profileImage}
           postData={postData}
           bio2={bio2}
+          user_id={user_id} //
         />
       )}
       //style={{flexDirection: 'row'}}
@@ -289,6 +299,7 @@ const MyPicList = ({
                   navigation.push('PostList', {
                     picId: index,
                     TabNavigation: TabNavigation,
+                    user_id: user_id, //
                   });
                 }}>
                 <View>

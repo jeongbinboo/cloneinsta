@@ -9,6 +9,7 @@ const initialState = {
   user_id: 'no id',
   name: 'no name',
   bio: 'no bio',
+  tab: {},
 };
 
 const userReducer = (state = initialState, action) => {

@@ -20,19 +20,19 @@ import {connect} from 'react-redux';
 //axios
 import axios from 'axios';
 
-const ClickedPic = ({item, TabNavigation, user_id}) => {
+const ClickedPic = ({item, TabNavigation, user_id, id}) => {
   const navigation = useNavigation();
 
   const [profileImage, setProfileImage] = useState('');
 
   const getProfile = async () => {
     axios
-      .get(`${axios.defaults.baseURL}users/${user_id}`, {
+      .get(`${axios.defaults.baseURL}users/${id}`, {
         headers: {
           Authorization: axios.defaults.headers.common['Authorization'],
         },
         params: {
-          user_id: `${user_id}`,
+          user_id: `${id}`,
         },
       })
       .then((response) => {
@@ -68,7 +68,7 @@ const ClickedPic = ({item, TabNavigation, user_id}) => {
                       : `http://34.64.201.219:8080/api/v1/uploads/${profileImage}`,
                 }}
               />
-              <Text style={styles.PostedByText}>{user_id}</Text>
+              <Text style={styles.PostedByText}>{id}</Text>
             </View>
           </TouchableOpacity>
 
@@ -135,7 +135,7 @@ const ClickedPic = ({item, TabNavigation, user_id}) => {
 
         {/* posted text ----*/}
         <View style={{flexDirection: 'row', marginLeft: 10, marginTop: 5}}>
-          <Text style={styles.toBold}>{user_id}</Text>
+          <Text style={styles.toBold}>{id}</Text>
           <Text style={[styles.defaultTextSize, {marginLeft: 10}]}>
             {item.content}
           </Text>

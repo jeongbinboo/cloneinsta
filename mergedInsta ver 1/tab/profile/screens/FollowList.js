@@ -18,6 +18,9 @@ import axios from 'axios';
 //redux
 import {connect} from 'react-redux';
 
+//nav
+import {useNavigation} from '@react-navigation/native';
+
 const FollowContext = React.createContext();
 
 //component
@@ -123,38 +126,52 @@ const FollowList = ({route, navigation, user_id}) => {
   );
 };
 
-const FollowerItem = ({item}) => (
-  <FollowContext.Consumer>
-    {(val) => (
-      <View style={styles.FollowerItemView}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
-            style={{height: 70, width: 70}}
-            source={require('../images/noProfile.png')}
-          />
-          <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
-            {item.user_id}
-          </Text>
+const FollowerItem = ({item}) => {
+  const navigation = useNavigation();
+
+  return (
+    <FollowContext.Consumer>
+      {(val) => (
+        <View style={styles.FollowerItemView}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('OtherProfile', {
+                  other_id: item.user_id,
+                  test: 1,
+                });
+              }}>
+              <Image
+                style={{height: 70, width: 70}}
+                source={require('../images/noProfile.png')}
+              />
+            </TouchableOpacity>
+            <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
+              {item.user_id}
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.deleteBtn}>
+              <Text style={{fontWeight: 'bold'}}>삭제</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View>
-          <TouchableOpacity style={styles.deleteBtn}>
-            <Text style={{fontWeight: 'bold'}}>삭제</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )}
-  </FollowContext.Consumer>
-);
+      )}
+    </FollowContext.Consumer>
+  );
+};
 
 const FollowingItem = ({item}) => (
   <FollowContext.Consumer>
     {(val) => (
       <View style={styles.FollowerItemView}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
-            style={{height: 70, width: 70}}
-            source={require('../images/noProfile.png')}
-          />
+          <TouchableOpacity>
+            <Image
+              style={{height: 70, width: 70}}
+              source={require('../images/noProfile.png')}
+            />
+          </TouchableOpacity>
           <Text style={{marginLeft: 10, fontWeight: 'bold', fontSize: 17}}>
             {item.user_id}
           </Text>

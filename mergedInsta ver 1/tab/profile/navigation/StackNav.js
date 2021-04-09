@@ -18,6 +18,7 @@ import FollowList from '../screens/FollowList';
 import NewPost from '../screens/NewPost';
 import CommentScreen from '../screens/CommentScreen';
 import ProfileHome from '../screens/ProfileHome';
+import OtherProfile from '../screens/OtherProfile';
 
 //modals
 import MakeContent from '../modals/MakeContent';
@@ -181,6 +182,17 @@ class StackNav extends React.Component {
               </TouchableOpacity>
             ),
           })}
+        />
+
+        {/* TabNavigation={this.props.TabNavigation} */}
+
+        <Stack.Screen
+          name="OtherProfile"
+          component={OtherProfile}
+          options={{
+            headerTitle: `otherprofile`,
+            headerTitleAlign: 'center',
+          }}
         />
 
         {/* <Stack.Screen

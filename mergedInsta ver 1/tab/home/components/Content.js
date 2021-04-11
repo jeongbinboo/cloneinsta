@@ -172,7 +172,12 @@ const Input = (props) => {
 class Content extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {users: [], profileImage: []};
     this.func = this.func.bind(this);
+    this.getUsersBio = this.getUsersBio.bind(this);
+  }
+  componentDidMount() {
+    this.getUsersBio();
   }
   renderItem({item}) {
     return (
@@ -188,16 +193,46 @@ class Content extends PureComponent {
     this.props.navigation.navigate('CommentScreen');
     this.props.cmtOpen();
   }
+  getUsersBio() {
+    axios
+      .get(`${axios.defaults.baseURL}/users/${this.props.item.writer}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({
+          users: response.data.data,
+          profileImage: response.data.data[0].profile_image,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   render() {
     return (
       <View style={styles.contentView}>
         <View style={styles.contentId}>
           <View style={styles.contentIcon}>
-            <Ionicons
-              name="ios-person-circle-outline"
-              size={60}
-              color="black"
-            />
+            {this.state.profileImage === '' ? (
+              <Ionicons
+                name="ios-person-circle-outline"
+                size={60}
+                color="black"
+              />
+            ) : (
+              <Image
+                style={{
+                  height: 50,
+                  width: 50,
+                  borderRadius: 60,
+                }}
+                source={{
+                  uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.profileImage}`,
+                }}
+              />
+            )}
           </View>
           <View style={styles.content}>
             <TouchableOpacity>

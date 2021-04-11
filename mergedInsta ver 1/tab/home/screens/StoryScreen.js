@@ -31,7 +31,7 @@ export default class StoryScreen extends PureComponent {
       })
       .then((response) => {
         this.setState({
-          story: response.data.data,
+          story: response.data.data[0],
         });
       })
       .catch((error) => {
@@ -46,7 +46,9 @@ export default class StoryScreen extends PureComponent {
     return (
       <Image
         style={styles.imgView}
-        source={{uri: `http://34.64.201.219:8080/api/v1/${item.url}`}}
+        source={{
+          uri: `http://34.64.201.219:8080/api/v1/uploads/${item.url}`, //왜 사진 안뜸
+        }}
       />
     );
   }
@@ -101,6 +103,6 @@ const styles = StyleSheet.create({
   imgView: {
     height: hp('50%'),
     width: wp('100%'),
-    backgroundColor: 'blue',
+    //backgroundColor: 'blue',
   },
 });

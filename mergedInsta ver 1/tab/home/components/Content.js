@@ -11,6 +11,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {FlatList} from 'react-native-gesture-handler';
 
 //ICON
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,7 +21,73 @@ import axios from 'axios';
 
 //REDUX
 import {connect} from 'react-redux';
-import {FlatList} from 'react-native-gesture-handler';
+
+class HeartIcon extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {isLiked: false, page: 1};
+    this.setLikes = this.setLikes.bind(this);
+    this.getLikesID = this.getLikesID.bind(this);
+  }
+  componentDidMount() {
+    this.getLikesID();
+  }
+  getLikesID() {
+    axios
+      .get(
+        `${axios.defaults.baseURL}/posts/${this.props.index + 1}/like?page=${
+          this.state.page
+        }`,
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
+        },
+      )
+      .then((response) => {
+        //console.log(response.data.data);
+        response.data.data.map((ele) => {
+          if (ele.user_id === 'test') {
+            //로그인한 사용자 user_id에 따라 바꿔야됨.
+            this.setState({isLiked: true, page: this.state.page + 1});
+          }
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  setLikes(i) {
+    axios
+      .post(`${axios.defaults.baseURL}/posts/${i + 1}/like`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({isLiked: !this.state.isLiked});
+        //console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  render() {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.setLikes(this.props.index);
+        }}>
+        <Ionicons
+          name={this.state.isLiked ? 'ios-heart' : 'ios-heart-outline'}
+          size={30}
+          style={{paddingRight: wp('3%'), marginLeft: wp('1%')}}
+        />
+      </TouchableOpacity>
+    );
+  }
+}
 
 class ContentIcon extends PureComponent {
   constructor(props) {
@@ -31,59 +98,21 @@ class ContentIcon extends PureComponent {
       isClicked: false,
       isLiked: false,
     };
-    //this.getLikes = this.getLikes.bind(this);
-    this.setLikes = this.setLikes.bind(this);
     this.isFunc = this.isFunc.bind(this);
-  }
-  /*componentDidMount() {
-    this.getLikes();
-  }
-  getLikes() {
-    axios
-      .post(`${axios.defaults.baseURL}/posts/${this.props.index + 1}/like`, {
-        headers: {
-          Authorization: axios.defaults.headers.common['Authorization'],
-        },
-      })
-      .then((response) => {
-        console.log(response.data.data[0]);
-        if (response.data.data[0].likes !== 0) {
-          this.setState({isLiked: true});
-          console.log('hiz');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }*/
-  setLikes(i) {
-    this.setState({isClicked: !this.state.isClicked});
-    axios
-      .post(`${axios.defaults.baseURL}/posts/${i + 1}/like`, {
-        headers: {
-          Authorization: axios.defaults.headers.common['Authorization'],
-        },
-      })
-      .then((response) => {
-        this.setState({isLiked: !this.state.isLiked});
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
   isFunc() {
     if (this.btnName === 'ios-chatbubble-outline') {
-      this.props.navigation.navigate('CommentScreen');
+      this.props.navigation.navigate('CommentScreen', {
+        index: this.props.index,
+      });
+      //index CommentScreen으로 안넘어감.. 왜?
       this.props.cmtOpen();
     } else {
       this.setState({isClicked: !this.state.isClicked});
     }
   }
   render() {
-    if (this.btnName === 'ios-heart-outline') {
-      this.tmpBtnName = 'ios-heart';
-    } else if (this.btnName === 'ios-chatbubble-outline') {
+    if (this.btnName === 'ios-chatbubble-outline') {
       this.tmpBtnName = 'ios-chatbubble';
     } else if (this.btnName === 'ios-paper-plane-outline') {
       this.tmpBtnName = 'ios-paper-plane';
@@ -93,10 +122,7 @@ class ContentIcon extends PureComponent {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.btnName === 'ios-heart-outline' ||
-          this.tmpBtnName === 'ios-heart'
-            ? this.setLikes(this.props.index)
-            : this.isFunc();
+          this.isFunc();
         }}>
         <Ionicons
           name={this.state.isClicked ? this.tmpBtnName : this.btnName}
@@ -108,28 +134,115 @@ class ContentIcon extends PureComponent {
   }
 }
 
-const LikesId = () => {
-  return (
-    <View style={styles.likesId}>
-      <Ionicons
-        name="ios-people-circle-outline"
-        size={25}
-        color="black"
-        style={{
-          marginRight: wp('1%'),
-        }}
-      />
-      <Text style={{fontWeight: 'bold', fontSize: hp('1.9%')}}>m0ovie</Text>
-      <Text
-        style={{
-          color: 'black',
-          fontSize: hp('1.9%'),
-        }}>
-        님 외 여러명이 좋아합니다.
-      </Text>
-    </View>
-  );
-};
+class LikesId extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {likes: 0, page: 1, likedId: '', likedProfileImg: ''};
+    this.getLikes = this.getLikes.bind(this);
+    this.getLikesID = this.getLikesID.bind(this);
+  }
+  componentDidMount() {
+    this.getLikes();
+    this.getLikesID();
+  }
+  getLikes() {
+    //좋아요 개수
+    if (this.props.index !== undefined) {
+      axios
+        .get(`${axios.defaults.baseURL}/posts/${this.props.index + 1}/likes`, {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
+        })
+        .then((response) => {
+          this.setState({likes: response.data.data[0].likes});
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
+  getLikesID() {
+    axios
+      .get(
+        `${axios.defaults.baseURL}/posts/${this.props.index + 1}/like?page=${
+          this.state.page
+        }`,
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
+        },
+      )
+      .then((response) => {
+        if (response.data.data[0]) {
+          this.setState({
+            page: this.state.page + 1,
+            likedId: response.data.data[0].user_id,
+            likedProfileImg: response.data.data[0].profile_image,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  render() {
+    return (
+      <>
+        <View style={styles.likesId}>
+          {this.state.likedProfileImg ? (
+            <Image
+              style={{
+                height: hp('3'),
+                width: wp('6'),
+                borderRadius: 60,
+                marginRight: '1%',
+              }}
+              source={{
+                uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.likedProfileImg}`,
+              }}
+            />
+          ) : (
+            <Ionicons
+              name="ios-people-circle-outline"
+              size={25}
+              color="black"
+              style={{
+                marginRight: wp('1%'),
+              }}
+            />
+          )}
+
+          {this.state.likes ? (
+            <>
+              <Text style={{fontWeight: 'bold', fontSize: hp('1.9%')}}>
+                {this.state.likedId}
+              </Text>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: hp('1.9%'),
+                }}>
+                님 외{' '}
+              </Text>
+            </>
+          ) : (
+            <></>
+          )}
+
+          <Text
+            style={{
+              color: 'black',
+              fontSize: hp('1.9%'),
+            }}>
+            {this.state.likes}명이 좋아합니다.
+          </Text>
+        </View>
+      </>
+    );
+  }
+}
 
 class Comment extends PureComponent {
   constructor(props) {
@@ -139,45 +252,48 @@ class Comment extends PureComponent {
     return (
       <View style={styles.cmt}>
         <TouchableOpacity>
-          <Text style={styles.cmtID}>{this.props.name}</Text>
+          <Text style={styles.cmtID}>{this.props.data.writer}</Text>
         </TouchableOpacity>
-        <Text style={{color: 'black'}}>{this.props.content}</Text>
+        <Text style={{color: 'black'}}>{this.props.data.content}</Text>
       </View>
     );
   }
 }
 
-const Input = (props) => {
-  return (
-    <View style={styles.cmtInput}>
-      <Ionicons
-        name="ios-person-circle-outline"
-        size={35}
-        color="black"
-        style={{
-          marginRight: wp(1),
-          marginLeft: wp(1),
-        }}
-      />
-      <TextInput
-        onFocus={() => props.func(props.index)}
-        multiline
-        placeholder={'댓글 달기..'}
-        placeholderTextColor="grey"
-      />
-    </View>
-  );
-};
-
 class Content extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {users: [], profileImage: []};
+    this.state = {users: [], profileImage: [], page: 1, cmt1: [], cmt2: []};
     this.func = this.func.bind(this);
     this.getUsersBio = this.getUsersBio.bind(this);
+    this.getComments = this.getComments.bind(this);
   }
   componentDidMount() {
     this.getUsersBio();
+    this.getComments();
+  }
+  getComments() {
+    axios
+      .get(
+        `${axios.defaults.baseURL}/comments/${this.props.index + 1}?page=${
+          this.state.page
+        }`,
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
+        },
+      )
+      .then((response) => {
+        this.setState({
+          cmt1: response.data.data[0],
+          cmt2: response.data.data[1],
+          page: this.state.page + 1,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   renderItem({item}) {
     return (
@@ -270,17 +386,18 @@ class Content extends PureComponent {
         </View>
         <View style={styles.iconView}>
           <View style={styles.mainIcon}>
-            <ContentIcon name="ios-heart-outline" index={this.props.index} />
+            <HeartIcon name="ios-heart-outline" index={this.props.index} />
             <ContentIcon
               name="ios-chatbubble-outline"
               navigation={this.props.navigation}
               cmtOpen={this.props.cmtOpen}
+              index={this.props.index}
             />
             <ContentIcon name="ios-paper-plane-outline" />
           </View>
           <ContentIcon name="ios-bookmark-outline" />
         </View>
-        <LikesId />
+        <LikesId index={this.props.index} />
         <View style={styles.cmtView}>
           <View style={styles.postContent}>
             <Text style={styles.cmtID}>{this.props.item.writer}</Text>
@@ -293,9 +410,8 @@ class Content extends PureComponent {
               </Text>
             </TouchableOpacity>
           </View>
-          <Comment name="sleepy" content="ㅋ" />
-          <Comment name="hungry" content="배고파" />
-          <Input func={this.props.func} index={this.props.index} />
+          {this.state.cmt1 ? <Comment data={this.state.cmt1} /> : <></>}
+          {this.state.cmt2 ? <Comment data={this.state.cmt2} /> : <></>}
         </View>
       </View>
     );
@@ -304,7 +420,7 @@ class Content extends PureComponent {
 
 const styles = StyleSheet.create({
   contentView: {
-    height: hp('86%'),
+    height: hp('81%'),
     marginVertical: hp('1%'),
   },
   contentId: {
@@ -366,11 +482,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: '3%',
     marginRight: '3%',
-  },
-  cmtInput: {
-    height: hp('5%'),
-    flexDirection: 'row',
-    marginTop: hp(1),
   },
   cmtID: {
     color: 'black',

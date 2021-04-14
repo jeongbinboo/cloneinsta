@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   FlatList,
   ScrollView,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,

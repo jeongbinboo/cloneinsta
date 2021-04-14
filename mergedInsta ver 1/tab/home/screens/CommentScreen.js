@@ -20,7 +20,7 @@ import {
 import axios from 'axios';
 
 //REDUX
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 
 const renderItem = ({item, index}, func1) => (
   <CmtList
@@ -42,6 +42,7 @@ export default class CommentScreen extends PureComponent {
       page: 1,
       isLoading: true,
       isReplyInput: false,
+      replyIndex: 0,
     };
     this.flatListRef = createRef();
     this.myRef = createRef();
@@ -49,7 +50,6 @@ export default class CommentScreen extends PureComponent {
     this.loadMore = this.loadMore.bind(this);
     this.setTime = this.setTime.bind(this);
     this.cancelReply = this.cancelReply.bind(this);
-    //this.props.TabNavigation.setOptions({tabBarVisible: false});
   }
 
   componentDidMount() {
@@ -92,7 +92,7 @@ export default class CommentScreen extends PureComponent {
         console.log(error);
       });
   }
-  postComments() {
+  postComments(i) {
     Keyboard.dismiss();
     if (this.state.value === '') {
       alert('내용을 입력하세요.');
@@ -100,10 +100,9 @@ export default class CommentScreen extends PureComponent {
     }
     if (this.state.isReplyInput) {
       //답글
-      //답글 확인하는 api 아직 없어서 아직 확인 못함
       axios
         .post(
-          `${axios.defaults.baseURL}/comments/1`,
+          `${axios.defaults.baseURL}/comments/${i + 1}/reply`,
           {content: this.state.value},
           {
             headers: {
@@ -113,7 +112,6 @@ export default class CommentScreen extends PureComponent {
         )
         .then((response) => {
           this.setState({
-            REPLY: this.state.REPLY.concat(response.data.data),
             value: '',
           });
         })
@@ -145,7 +143,7 @@ export default class CommentScreen extends PureComponent {
   }
   focusInput(index) {
     this.myRef.current.focus();
-    this.setState({isReplyInput: true});
+    this.setState({isReplyInput: true, replyIndex: index});
     if (index >= 3) index = index - 3;
     this.flatListRef.current.scrollToIndex({index: index});
   }
@@ -164,6 +162,36 @@ export default class CommentScreen extends PureComponent {
   render() {
     return (
       <View style={{flex: 1}}>
+        <View style={styles.contentView}>
+          <View style={{marginRight: wp('1%')}}>
+            <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
+          </View>
+          <View style={styles.cmt}>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    marginRight: wp('2%'),
+                    fontSize: hp('2.3%'),
+                  }}>
+                  hi
+                </Text>
+              </TouchableOpacity>
+              <Text style={{fontSize: hp('2.3%')}}>안녕하십니까</Text>
+            </View>
+            <View style={styles.cmtExtraView}>
+              <Text
+                style={{
+                  color: 'grey',
+                  marginRight: wp('8%'),
+                  fontSize: hp('1.8%'),
+                }}>
+                5시간 전
+              </Text>
+            </View>
+          </View>
+        </View>
         <View style={styles.container}>
           <FlatList
             ref={this.flatListRef}
@@ -203,7 +231,8 @@ export default class CommentScreen extends PureComponent {
                 placeholder={'댓글 달기...'}
                 placeholderTextColor="grey"
               />
-              <TouchableOpacity onPress={() => this.postComments()}>
+              <TouchableOpacity
+                onPress={() => this.postComments(this.state.replyIndex)}>
                 <Text style={{color: 'skyblue', fontSize: hp('2%')}}>게시</Text>
               </TouchableOpacity>
             </View>
@@ -217,7 +246,6 @@ export default class CommentScreen extends PureComponent {
 class CmtList extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {reply: false};
   }
   render() {
     return (
@@ -264,13 +292,7 @@ class CmtList extends PureComponent {
           </View>
           <CmtLikes index={this.props.index} />
         </View>
-        {this.state.reply ? ( //renderItem으로 reply..?
-          <View>
-            <Text>하이</Text>
-          </View>
-        ) : (
-          <></>
-        )}
+        {/*답글 */}
       </>
     );
   }
@@ -286,7 +308,6 @@ class CmtLikes extends PureComponent {
     this.getIsLikes();
   }
   setIsLikes(i) {
-    //this.setState({isLikes: !this.state.isLikes});
     axios
       .post(`${axios.defaults.baseURL}/comments/${i + 1}/like`, {
         headers: {
@@ -310,7 +331,7 @@ class CmtLikes extends PureComponent {
       })
       .then((response) => {
         response.data.data.map((ele) => {
-          if (ele.user_id === 'james') {
+          if (ele.user_id === 'test') {
             //로그인한 사용자 user_id에 따라 바꿔야됨.
             this.setState({isLikes: true});
           }
@@ -359,6 +380,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: wp('1%'),
     paddingRight: wp('1%'),
+  },
+  contentView: {
+    height: hp(7),
+    marginTop: hp('1%'),
+    marginBottom: hp('1%'),
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: wp('1%'),
+    paddingRight: wp('1%'),
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
   },
   cmt: {
     width: wp('74%'),
@@ -423,9 +455,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  name: state.userReducer.name,
-  user_id: state.userReducer.user_id,
-});
+const mapStateToProps = (state) => {
+  return {
+    user_id: state.userReducer.user_id,
+  };
+};
 
 connect(mapStateToProps)(CmtLikes);

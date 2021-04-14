@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import CommentScreen from '../screens/CommentScreen';

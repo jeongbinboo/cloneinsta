@@ -32,11 +32,6 @@ class Home extends Component {
           storyHandler={() => this.toggleStory()}
           TabNavigation={this.props.TabNavigation}
         />
-        {this.state.isStory ? (
-          <StoryScreen storyHandler={() => this.toggleStory()} />
-        ) : (
-          <></>
-        )}
       </>
     );
   }

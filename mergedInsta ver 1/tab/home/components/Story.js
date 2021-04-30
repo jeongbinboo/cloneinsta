@@ -7,12 +7,22 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+import StoryScreen from '../screens/StoryScreen';
+
 //ICON
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class Story extends PureComponent {
   constructor(props) {
     super(props);
+    this.onPressFunc = this.onPressFunc.bind(this);
+  }
+  onPressFunc() {
+    this.props.storyHandler();
+    this.props.navigation.navigate('StoryScreen', {
+      writer: this.props.writer,
+      navigation: this.props.navigation,
+    });
   }
   render() {
     return (
@@ -20,7 +30,7 @@ export default class Story extends PureComponent {
         <View style={styles.storyId}>
           <TouchableOpacity
             onPress={() => {
-              this.props.storyHandler();
+              this.onPressFunc();
             }}>
             <Ionicons
               name="ios-person-circle-outline"
@@ -29,7 +39,7 @@ export default class Story extends PureComponent {
             />
           </TouchableOpacity>
           <Text style={{fontSize: hp('1.6%'), color: 'black'}}>
-            {this.props.name}
+            {this.props.writer}
           </Text>
         </View>
       </View>

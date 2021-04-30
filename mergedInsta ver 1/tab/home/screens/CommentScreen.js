@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Keyboard,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
@@ -71,11 +72,16 @@ export default class CommentScreen extends PureComponent {
   }
   getComments() {
     axios
-      .get(`${axios.defaults.baseURL}/comments/1?page=${this.state.page}`, {
-        headers: {
-          Authorization: axios.defaults.headers.common['Authorization'],
+      .get(
+        `${axios.defaults.baseURL}/comments/${
+          this.props.route.params.index + 1
+        }?page=${this.state.page}`,
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
         },
-      })
+      )
       .then((response) => {
         response.data.data.map((ele) => {
           ele.created_at = this.setTime(ele.created_at);
@@ -122,7 +128,9 @@ export default class CommentScreen extends PureComponent {
       //댓글
       axios
         .post(
-          `${axios.defaults.baseURL}/comments/1`,
+          `${axios.defaults.baseURL}/comments/${
+            this.props.route.params.index + 1
+          }`,
           {content: this.state.value},
           {
             headers: {
@@ -164,7 +172,17 @@ export default class CommentScreen extends PureComponent {
       <View style={{flex: 1}}>
         <View style={styles.contentView}>
           <View style={{marginRight: wp('1%')}}>
-            <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
+            {/*<Ionicons name="ios-person-circle-outline" size={hp('7%')} />*/}
+            <Image
+              style={{
+                height: 50,
+                width: 50,
+                borderRadius: 60,
+              }}
+              source={{
+                uri: `http://34.64.201.219:8080/api/v1/uploads/${this.props.route.params.profile}`,
+              }}
+            />
           </View>
           <View style={styles.cmt}>
             <View style={{flexDirection: 'row'}}>
@@ -175,10 +193,12 @@ export default class CommentScreen extends PureComponent {
                     marginRight: wp('2%'),
                     fontSize: hp('2.3%'),
                   }}>
-                  hi
+                  {this.props.route.params.writer}
                 </Text>
               </TouchableOpacity>
-              <Text style={{fontSize: hp('2.3%')}}>안녕하십니까</Text>
+              <Text style={{fontSize: hp('2.3%')}}>
+                {this.props.route.params.content}
+              </Text>
             </View>
             <View style={styles.cmtExtraView}>
               <Text
@@ -221,7 +241,20 @@ export default class CommentScreen extends PureComponent {
             <></>
           )}
           <View style={styles.inputTextView}>
-            <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
+            <Image
+              style={{
+                height: 50,
+                width: 50,
+                borderRadius: 60,
+                marginRight: 6,
+                marginLeft: 8,
+                marginTop: 5,
+                marginBottom: 3,
+              }}
+              source={{
+                uri: `http://34.64.201.219:8080/api/v1/uploads/${this.props.route.params.profile}`,
+              }}
+            />
             <View style={styles.submitView}>
               <TextInput
                 ref={this.myRef}
@@ -246,13 +279,45 @@ export default class CommentScreen extends PureComponent {
 class CmtList extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {profileImage: ''};
+    this.getUserProfile = this.getUserProfile.bind(this);
+  }
+  componentDidMount() {
+    this.getUserProfile();
+  }
+  getUserProfile() {
+    axios
+      .get(`${axios.defaults.baseURL}/users/${this.props.name}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({profileImage: response.data.data[0].profile_image});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   render() {
     return (
       <>
         <View style={styles.cmtView}>
           <View style={{marginRight: wp('1%')}}>
-            <Ionicons name="ios-person-circle-outline" size={hp('7%')} />
+            {this.state.profileImage ? (
+              <Image
+                style={{
+                  height: 50,
+                  width: 50,
+                  borderRadius: 60,
+                }}
+                source={{
+                  uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.profileImage}`,
+                }}
+              />
+            ) : (
+              <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
+            )}
           </View>
           <View style={styles.cmt}>
             <View style={{flexDirection: 'row'}}>

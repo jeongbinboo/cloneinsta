@@ -19,66 +19,34 @@ export default class StoryScreen extends PureComponent {
     this._onRefresh = this._onRefresh.bind(this);
     this.state = {story: []};
   }
-  componentDidMount() {
-    this.getStory();
-  }
   getStory() {
     axios
-      .get(`${axios.defaults.baseURL}/stories/test`, {
-        headers: {
-          Authorization: axios.defaults.headers.common['Authorization'],
+      .get(
+        `${axios.defaults.baseURL}/stories/${this.props.route.params.writer}`,
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
         },
-      })
+      )
       .then((response) => {
         this.setState({
-          story: response.data.data[0],
+          story: this.state.story.concat(response.data.data),
         });
       })
       .catch((error) => {
-        console.log('storyError' + error);
+        console.log(error);
       });
   }
   _onRefresh() {
     //밑으로 내리면 닫힘
     this.props.storyHandler();
   }
-  renderItem({item}) {
-    return (
-      <Image
-        style={styles.imgView}
-        source={{
-          uri: `http://34.64.201.219:8080/api/v1/uploads/${item.url}`, //왜 사진 안뜸
-        }}
-      />
-    );
-  }
+
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.background}
-          onPress={() => this.props.storyHandler()}>
-          <View
-            style={{
-              marginTop: hp('20%'),
-            }}>
-            <FlatList
-              horizontal
-              onRefresh={this._onRefresh}
-              data={this.state.story}
-              renderItem={(item) => {
-                return this.renderItem({item});
-              }}
-              keyExtractor={(index) => index.toString()}
-            />
-          </View>
-        </TouchableOpacity>
-        {/*<Image
-            style={styles.imgView}
-            source={{
-              uri: `http://34.64.201.219:8080/api/v1/${this.state.story}`,
-            }}
-          />*/}
+        <Text>하이</Text>
       </View>
     );
   }
@@ -86,23 +54,11 @@ export default class StoryScreen extends PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: hp('100%'),
-    width: wp('100%'),
-    backgroundColor: 'transparent',
-  },
-  background: {
-    position: 'absolute',
-    height: hp('100%'),
-    width: wp('100%'),
-    backgroundColor: 'rgba(0,0,0,0.8)',
-  },
-  imgView: {
     height: hp('50%'),
     width: wp('100%'),
-    //backgroundColor: 'blue',
+    backgroundColor: 'yellow',
   },
 });

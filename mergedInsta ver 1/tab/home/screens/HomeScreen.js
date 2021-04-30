@@ -95,7 +95,7 @@ class HomeScreen extends PureComponent {
   renderStory({item}) {
     return (
       <Story
-        writer={item.writer}
+        item={item}
         storyHandler={this.props.storyHandler}
         navigation={this.props.StackNavi}
       />

@@ -23,12 +23,16 @@ import {connect} from 'react-redux';
 import ModalScreen from '../modals/modalScreen';
 import Story from '../components/Story';
 import Content from '../components/Content';
-import StoryScreen from './StoryScreen';
 
 class HomeScreen extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {isModal: false, isStory: false, posts: [], story: []};
+    this.state = {
+      isModal: false,
+      isStory: false,
+      posts: [],
+      story: [{writer: this.props.user_id}],
+    };
     this.cmtRef = React.createRef();
     this.scrollTo = this.scrollTo.bind(this);
   }
@@ -62,8 +66,9 @@ class HomeScreen extends PureComponent {
       })
       .then((response) => {
         this.setState({
-          story: response.data.data,
+          story: this.state.story.concat(response.data.data),
         });
+        //console.log(this.state.story);
       })
       .catch((error) => {
         console.log(error);
@@ -74,11 +79,6 @@ class HomeScreen extends PureComponent {
       isModal: !this.state.isModal,
     });
   }
-  /*toggleStory() {
-    this.setState({
-      isStory: !this.state.isStory,
-    });
-  }*/
   renderContent({item, index}, func) {
     return (
       <Content
@@ -92,7 +92,13 @@ class HomeScreen extends PureComponent {
     );
   }
   renderStory({item}) {
-    return <Story name={item.writer} storyHandler={this.props.storyHandler} />;
+    return (
+      <Story
+        writer={item.writer}
+        storyHandler={this.props.storyHandler}
+        navigation={this.props.StackNavi}
+      />
+    );
   }
   scrollTo(index) {
     index = (index + 1) * 400 + index * 250; //..흑흑..
@@ -121,11 +127,6 @@ class HomeScreen extends PureComponent {
         />
         {this.state.isModal ? (
           <ModalScreen modalHandler={() => this.toggleModal()} />
-        ) : (
-          <></>
-        )}
-        {this.state.isStory ? (
-          <StoryScreen modalHandler={() => this.toggleStory()} />
         ) : (
           <></>
         )}

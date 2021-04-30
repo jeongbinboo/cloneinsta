@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import CommentScreen from '../screens/CommentScreen';
+import StoryScreen from '../screens/StoryScreen';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const HeaderIcon = (props) => {
@@ -71,7 +72,7 @@ class HomeStack extends Component {
           </Stack.Screen>
           <Stack.Screen
             name="CommentScreen"
-            //component={CommentScreen}
+            component={CommentScreen}
             options={({navigation}) => ({
               headerTitle: '댓글',
               headerTitleAlign: 'center',
@@ -89,14 +90,13 @@ class HomeStack extends Component {
                 </TouchableOpacity>
               ),
               headerRight: () => <HeaderIcon name="ios-paper-plane-outline" />,
-            })}>
-            {() => (
-              <CommentScreen
-                TabNavigation={this.props.TabNavigation}
-                cmtOpen={() => this.isCommentOpen()}
-              />
-            )}
-          </Stack.Screen>
+            })}
+          />
+          <Stack.Screen
+            name="StoryScreen"
+            component={StoryScreen}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       </>
     );

@@ -89,7 +89,7 @@ class HeartIcon extends PureComponent {
   }
 }
 
-class ContentIcon extends PureComponent {
+export class ContentIcon extends PureComponent {
   constructor(props) {
     super(props);
     this.btnName = this.props.name;
@@ -104,8 +104,10 @@ class ContentIcon extends PureComponent {
     if (this.btnName === 'ios-chatbubble-outline') {
       this.props.navigation.navigate('CommentScreen', {
         index: this.props.index,
-      });
-      //index CommentScreen으로 안넘어감.. 왜?
+        writer: this.props.writer,
+        content: this.props.content,
+        profile: this.props.profile,
+      }); //params 넘겨줄때 stackNavigation에서 component로 넘겨줘야 params 넘어감
       this.props.cmtOpen();
     } else {
       this.setState({isClicked: !this.state.isClicked});
@@ -306,7 +308,12 @@ class Content extends PureComponent {
     );
   }
   func() {
-    this.props.navigation.navigate('CommentScreen');
+    this.props.navigation.navigate('CommentScreen', {
+      index: this.props.index,
+      writer: this.props.item.writer,
+      content: this.props.item.content,
+      profile: this.state.profileImage,
+    });
     this.props.cmtOpen();
   }
   getUsersBio() {
@@ -388,10 +395,13 @@ class Content extends PureComponent {
           <View style={styles.mainIcon}>
             <HeartIcon name="ios-heart-outline" index={this.props.index} />
             <ContentIcon
+              writer={this.props.item.writer}
+              content={this.props.item.content}
               name="ios-chatbubble-outline"
               navigation={this.props.navigation}
               cmtOpen={this.props.cmtOpen}
               index={this.props.index}
+              profile={this.state.profileImage}
             />
             <ContentIcon name="ios-paper-plane-outline" />
           </View>

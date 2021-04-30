@@ -31,7 +31,7 @@ class HomeScreen extends PureComponent {
       isModal: false,
       isStory: false,
       posts: [],
-      story: [{writer: this.props.user_id}],
+      story: [{writer: this.props.user_id, url: ''}],
     };
     this.cmtRef = React.createRef();
     this.scrollTo = this.scrollTo.bind(this);
@@ -39,6 +39,7 @@ class HomeScreen extends PureComponent {
   componentDidMount() {
     this.getContent();
     this.getStory();
+    this.props.TabNavigation.setOptions({tabBarVisible: true});
   }
   getContent() {
     axios

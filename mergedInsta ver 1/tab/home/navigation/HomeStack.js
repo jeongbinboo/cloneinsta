@@ -34,6 +34,17 @@ class HomeStack extends Component {
     }
   }
   render() {
+    const config = {
+      animation: 'spring',
+      config: {
+        stiffness: 1000,
+        damping: 500,
+        mass: 3,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+      },
+    };
     return (
       <>
         <Stack.Navigator>
@@ -64,6 +75,7 @@ class HomeStack extends Component {
             }}>
             {({navigation}) => (
               <HomeScreen
+                TabNavigation={this.props.TabNavigation}
                 storyHandler={this.props.storyHandler}
                 StackNavi={navigation}
                 cmtOpen={() => this.isCommentOpen()}
@@ -95,7 +107,15 @@ class HomeStack extends Component {
           <Stack.Screen
             name="StoryScreen"
             component={StoryScreen}
-            options={{headerShown: false}}
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              gestureDirection: 'vertical',
+              transitionSpec: {
+                open: config,
+                close: config,
+              },
+            }} //위에서 아래로 swipe back
           />
         </Stack.Navigator>
       </>

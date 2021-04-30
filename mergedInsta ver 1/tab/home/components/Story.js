@@ -18,10 +18,9 @@ export default class Story extends PureComponent {
     this.onPressFunc = this.onPressFunc.bind(this);
   }
   onPressFunc() {
-    this.props.storyHandler();
+    //this.props.storyHandler();
     this.props.navigation.navigate('StoryScreen', {
       writer: this.props.writer,
-      navigation: this.props.navigation,
     });
   }
   render() {

@@ -26,6 +26,7 @@ export default class Story extends PureComponent {
     //this.props.storyHandler();
     this.props.navigation.navigate('StoryScreen', {
       writer: this.props.item.writer,
+      profileImage: this.state.profileImage,
     });
   }
   getUserProfile() {

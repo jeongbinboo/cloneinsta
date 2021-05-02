@@ -98,6 +98,7 @@ class HomeScreen extends PureComponent {
         item={item}
         storyHandler={this.props.storyHandler}
         navigation={this.props.StackNavi}
+        TabNavigation={this.props.TabNavigation}
       />
     );
   }

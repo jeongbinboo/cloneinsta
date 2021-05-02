@@ -23,6 +23,7 @@ import axios from 'axios';
 //REDUX
 import {connect, useSelector} from 'react-redux';
 
+//댓글 FlatList RenderItem
 const renderItem = ({item, index}, func1) => (
   <CmtList
     name={item.writer}
@@ -38,11 +39,11 @@ export default class CommentScreen extends PureComponent {
     super(props);
     this.state = {
       value: '',
-      DATA: [],
-      REPLY: [],
+      DATA: [], //댓글 list
+      REPLY: [], //답글 list
       page: 1,
       isLoading: true,
-      isReplyInput: false,
+      isReplyInput: false, //답글다는중 flag
       replyIndex: 0,
     };
     this.flatListRef = createRef();
@@ -71,10 +72,11 @@ export default class CommentScreen extends PureComponent {
     }
   }
   getComments() {
+    //댓글 불러오기
     axios
       .get(
         `${axios.defaults.baseURL}/comments/${
-          this.props.route.params.index + 1
+          this.props.route.params.index + 1 //navigate할 때 넘겨준 포스트 id
         }?page=${this.state.page}`,
         {
           headers: {
@@ -99,13 +101,14 @@ export default class CommentScreen extends PureComponent {
       });
   }
   postComments(i) {
+    //댓글 or 답글 작성하기
     Keyboard.dismiss();
     if (this.state.value === '') {
       alert('내용을 입력하세요.');
       return;
     }
     if (this.state.isReplyInput) {
-      //답글
+      //답글 달기
       axios
         .post(
           `${axios.defaults.baseURL}/comments/${i + 1}/reply`,
@@ -125,7 +128,7 @@ export default class CommentScreen extends PureComponent {
           console.log(error);
         });
     } else {
-      //댓글
+      //댓글 달기
       axios
         .post(
           `${axios.defaults.baseURL}/comments/${
@@ -150,6 +153,7 @@ export default class CommentScreen extends PureComponent {
     }
   }
   focusInput(index) {
+    //답글달기를 눌렀을 때 그 댓글에 focus
     this.myRef.current.focus();
     this.setState({isReplyInput: true, replyIndex: index});
     if (index >= 3) index = index - 3;
@@ -164,6 +168,7 @@ export default class CommentScreen extends PureComponent {
     }
   }
   cancelReply() {
+    //답글달기 취소하기
     Keyboard.dismiss();
     this.setState({isReplyInput: false});
   }
@@ -279,13 +284,42 @@ export default class CommentScreen extends PureComponent {
 class CmtList extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {profileImage: ''};
+    this.state = {profileImage: '', page: 1, DATA: [], replyFlag: false};
     this.getUserProfile = this.getUserProfile.bind(this);
+    this.getReply = this.getReply.bind(this);
+    this.renderReply = this.renderReply.bind(this);
   }
   componentDidMount() {
     this.getUserProfile();
+    this.getReply();
+  }
+  getReply() {
+    //답글 불러오기
+    axios
+      .get(
+        `${axios.defaults.baseURL}/comments/${
+          this.props.index + 1
+        }/reply?page=${this.state.page}`,
+        {
+          headers: {
+            Authorization: axios.defaults.headers.common['Authorization'],
+          },
+        },
+      )
+      .then((response) => {
+        this.setState({
+          DATA: this.state.DATA.concat(response.data.data),
+          page: this.state.page + 1,
+          replyFlag: true,
+        });
+        console.log(this.state.DATA);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   getUserProfile() {
+    //프로필 사진 불러오기
     axios
       .get(`${axios.defaults.baseURL}/users/${this.props.name}`, {
         headers: {
@@ -298,6 +332,9 @@ class CmtList extends PureComponent {
       .catch((error) => {
         console.log(error);
       });
+  }
+  renderReply({item, index}) {
+    return <ReplyList item={item} index={index} />;
   }
   render() {
     return (
@@ -357,22 +394,109 @@ class CmtList extends PureComponent {
           </View>
           <CmtLikes index={this.props.index} />
         </View>
-        {/*답글 */}
+        {this.state.replyFlag ? (
+          <FlatList
+            data={this.state.DATA}
+            renderItem={({item, index}) => {
+              return this.renderReply({item, index});
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        ) : (
+          <></>
+        )}
       </>
     );
   }
 }
 
-class CmtLikes extends PureComponent {
+class ReplyList extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {isLikes: false};
+    this.state = {profileImage: ''};
+    this.getUserProfile = this.getUserProfile.bind(this);
+  }
+  componentDidMount() {
+    this.getUserProfile();
+  }
+  getUserProfile() {
+    //프로필 사진 불러오기
+    axios
+      .get(`${axios.defaults.baseURL}/users/${this.props.item.writer}`, {
+        headers: {
+          Authorization: axios.defaults.headers.common['Authorization'],
+        },
+      })
+      .then((response) => {
+        this.setState({profileImage: response.data.data[0].profile_image});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  render() {
+    return (
+      <View style={styles.replyView}>
+        <View style={{marginRight: wp('1%')}}>
+          {this.state.profileImage ? (
+            <Image
+              style={{
+                height: 50,
+                width: 50,
+                borderRadius: 60,
+              }}
+              source={{
+                uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.profileImage}`,
+              }}
+            />
+          ) : (
+            <Ionicons name="ios-person-circle-outline" size={hp('8%')} />
+          )}
+        </View>
+        <View style={styles.replyCmt}>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  marginRight: wp('2%'),
+                  fontSize: hp('2.3%'),
+                }}>
+                {this.props.item.writer}
+              </Text>
+            </TouchableOpacity>
+            <Text style={{fontSize: hp('2.3%')}}>
+              {this.props.item.content}
+            </Text>
+          </View>
+          <View style={styles.cmtExtraView}>
+            <Text
+              style={{
+                color: 'grey',
+                marginRight: wp('8%'),
+                fontSize: hp('1.8%'),
+              }}>
+              1시간 전
+            </Text>
+          </View>
+        </View>
+        <CmtLikes index={this.props.item.id - 1} />
+      </View>
+    );
+  }
+}
+
+export class CmtLikes extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {isLikes: false}; //댓글 좋아요 flag
     this.setIsLikes = this.setIsLikes.bind(this);
   }
   componentDidMount() {
     this.getIsLikes();
   }
   setIsLikes(i) {
+    //댓글 좋아요 누르기
     axios
       .post(`${axios.defaults.baseURL}/comments/${i + 1}/like`, {
         headers: {
@@ -388,6 +512,7 @@ class CmtLikes extends PureComponent {
       });
   }
   getIsLikes() {
+    //댓글 좋아요 가져오기
     axios
       .get(`${axios.defaults.baseURL}/comments/${this.props.index + 1}/like`, {
         headers: {
@@ -397,7 +522,7 @@ class CmtLikes extends PureComponent {
       .then((response) => {
         response.data.data.map((ele) => {
           if (ele.user_id === 'test') {
-            //로그인한 사용자 user_id에 따라 바꿔야됨.
+            //로그인한 사용자 user_id에 따라 바꿔야됨. (아직 안됨 redux 사용해야함)
             this.setState({isLikes: true});
           }
         });
@@ -407,6 +532,7 @@ class CmtLikes extends PureComponent {
       });
   }
   render() {
+    //console.log(this.props.user_id);
     return (
       <View style={styles.LikesIcon}>
         <Ionicons
@@ -446,6 +572,15 @@ const styles = StyleSheet.create({
     paddingLeft: wp('1%'),
     paddingRight: wp('1%'),
   },
+  replyView: {
+    height: hp(7),
+    marginTop: hp('1%'),
+    marginBottom: hp('1%'),
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginLeft: wp('14%'),
+    paddingRight: wp('1%'),
+  },
   contentView: {
     height: hp(7),
     marginTop: hp('1%'),
@@ -459,6 +594,11 @@ const styles = StyleSheet.create({
   },
   cmt: {
     width: wp('74%'),
+    height: hp('6.5%'),
+    flexDirection: 'column',
+  },
+  replyCmt: {
+    width: wp('61%'),
     height: hp('6.5%'),
     flexDirection: 'column',
   },

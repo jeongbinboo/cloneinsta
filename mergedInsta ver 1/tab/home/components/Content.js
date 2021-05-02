@@ -193,31 +193,19 @@ class LikesId extends PureComponent {
     return (
       <>
         <View style={styles.likesId}>
-          {this.state.likedProfileImg ? (
-            <Image
-              style={{
-                height: hp('3'),
-                width: wp('6'),
-                borderRadius: 60,
-                marginRight: '1%',
-              }}
-              source={{
-                uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.likedProfileImg}`,
-              }}
-            />
-          ) : (
-            <Ionicons
-              name="ios-people-circle-outline"
-              size={25}
-              color="black"
-              style={{
-                marginRight: wp('1%'),
-              }}
-            />
-          )}
-
           {this.state.likes ? (
             <>
+              <Image
+                style={{
+                  height: hp('3'),
+                  width: wp('6'),
+                  borderRadius: 60,
+                  marginRight: '1%',
+                }}
+                source={{
+                  uri: `http://34.64.201.219:8080/api/v1/uploads/${this.state.likedProfileImg}`,
+                }}
+              />
               <Text style={{fontWeight: 'bold', fontSize: hp('1.9%')}}>
                 {this.state.likedId}
               </Text>
@@ -228,18 +216,22 @@ class LikesId extends PureComponent {
                 }}>
                 님 외{' '}
               </Text>
+              <TouchableOpacity>
+                <Text style={{fontWeight: 'bold', fontSize: hp('1.9%')}}>
+                  {this.state.likes}
+                </Text>
+              </TouchableOpacity>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: hp('1.9%'),
+                }}>
+                명이 좋아합니다.
+              </Text>
             </>
           ) : (
             <></>
           )}
-
-          <Text
-            style={{
-              color: 'black',
-              fontSize: hp('1.9%'),
-            }}>
-            {this.state.likes}명이 좋아합니다.
-          </Text>
         </View>
       </>
     );
